@@ -1,0 +1,101 @@
+type Query {
+  students(query: String): [Student!]!
+  courses(query: String): [Course!]! 
+  sessions(query: SessionQueryInput): [Session!]!
+  shifts: [Shift!]!
+  rooms: [Room!]!
+}
+
+type Mutation {
+  createStudent(data: StudentCreateInput!): Student!
+  createCourse(data: CourseCreateInput!): Course!
+  createSession(data: SessionCreateInput!): Session!
+  createRoom(data: RoomCreateInput!): Room!
+  createShift(data: ShiftCreateInput!): Shift!
+}
+
+input StudentCreateInput {
+  studentID: String!
+  name: String!
+  courseIDs: [String!]
+}
+
+input CourseCreateInput {
+  courseID: String!
+  name: String!
+}
+
+input SessionCreateInput {
+  courseID: String!
+  shift: SessionConnectShiftInput!
+  roomID: String!
+  studentIDs: [String!]!
+}
+
+input SessionConnectShiftInput {
+  date: String!
+  startTime: String!
+  endTime: String!
+}
+
+input SessionQueryInput {
+  shift: SessionQueryShiftInput
+  courseID: String
+  roomID: String
+  studentID: String
+}
+
+input SessionQueryShiftInput {
+  date: String
+  startTime: String
+  endTime: String
+}
+
+input ShiftCreateInput {
+  date: String!
+  startTime: String!
+  endTime: String!
+}
+
+input RoomCreateInput {
+  roomID: String!
+  totalPC: Int!
+}
+
+type Student {
+  id: ID!
+  studentID: String
+  name: String!
+  courses: [Course!]!
+}
+
+type Course {
+  id: ID!
+  courseID: String!
+  name: String!
+  sessions: [Session!]!
+  students: [Student!]!
+}
+
+type Shift {
+  id: ID!
+  date: String!
+  startTime: String!
+  endTime: String!
+  sessions: [Session!]!
+}
+
+type Room {
+  id: ID!
+  roomID: String!
+  totalPC: Int!
+  sessions: [Session!]!
+}
+
+type Session {
+  id: ID!
+  students: [Student!]!
+  course: Course!
+  shift: Shift!
+  room: Room!
+}

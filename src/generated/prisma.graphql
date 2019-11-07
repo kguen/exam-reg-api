@@ -1,0 +1,1910 @@
+# source: http://localhost:4466/exam
+# timestamp: Fri Nov 01 2019 23:33:04 GMT+0700 (Indochina Time)
+
+type AggregateCourse {
+  count: Int!
+}
+
+type AggregateRoom {
+  count: Int!
+}
+
+type AggregateSession {
+  count: Int!
+}
+
+type AggregateShift {
+  count: Int!
+}
+
+type AggregateStudent {
+  count: Int!
+}
+
+type BatchPayload {
+  """The number of nodes that have been affected by the Batch operation."""
+  count: Long!
+}
+
+type Course implements Node {
+  id: ID!
+  courseID: String!
+  name: String!
+  sessions(where: SessionWhereInput, orderBy: SessionOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Session!]
+  students(where: StudentWhereInput, orderBy: StudentOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Student!]
+}
+
+"""A connection to a list of items."""
+type CourseConnection {
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+
+  """A list of edges."""
+  edges: [CourseEdge]!
+  aggregate: AggregateCourse!
+}
+
+input CourseCreateInput {
+  id: ID
+  courseID: String!
+  name: String!
+  sessions: SessionCreateManyWithoutCourseInput
+  students: StudentCreateManyWithoutCoursesInput
+}
+
+input CourseCreateManyWithoutStudentsInput {
+  create: [CourseCreateWithoutStudentsInput!]
+  connect: [CourseWhereUniqueInput!]
+}
+
+input CourseCreateOneWithoutSessionsInput {
+  create: CourseCreateWithoutSessionsInput
+  connect: CourseWhereUniqueInput
+}
+
+input CourseCreateWithoutSessionsInput {
+  id: ID
+  courseID: String!
+  name: String!
+  students: StudentCreateManyWithoutCoursesInput
+}
+
+input CourseCreateWithoutStudentsInput {
+  id: ID
+  courseID: String!
+  name: String!
+  sessions: SessionCreateManyWithoutCourseInput
+}
+
+"""An edge in a connection."""
+type CourseEdge {
+  """The item at the end of the edge."""
+  node: Course!
+
+  """A cursor for use in pagination."""
+  cursor: String!
+}
+
+enum CourseOrderByInput {
+  id_ASC
+  id_DESC
+  courseID_ASC
+  courseID_DESC
+  name_ASC
+  name_DESC
+}
+
+type CoursePreviousValues {
+  id: ID!
+  courseID: String!
+  name: String!
+}
+
+input CourseScalarWhereInput {
+  """Logical AND on all given filters."""
+  AND: [CourseScalarWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [CourseScalarWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [CourseScalarWhereInput!]
+  id: ID
+
+  """All values that are not equal to given value."""
+  id_not: ID
+
+  """All values that are contained in given list."""
+  id_in: [ID!]
+
+  """All values that are not contained in given list."""
+  id_not_in: [ID!]
+
+  """All values less than the given value."""
+  id_lt: ID
+
+  """All values less than or equal the given value."""
+  id_lte: ID
+
+  """All values greater than the given value."""
+  id_gt: ID
+
+  """All values greater than or equal the given value."""
+  id_gte: ID
+
+  """All values containing the given string."""
+  id_contains: ID
+
+  """All values not containing the given string."""
+  id_not_contains: ID
+
+  """All values starting with the given string."""
+  id_starts_with: ID
+
+  """All values not starting with the given string."""
+  id_not_starts_with: ID
+
+  """All values ending with the given string."""
+  id_ends_with: ID
+
+  """All values not ending with the given string."""
+  id_not_ends_with: ID
+  courseID: String
+
+  """All values that are not equal to given value."""
+  courseID_not: String
+
+  """All values that are contained in given list."""
+  courseID_in: [String!]
+
+  """All values that are not contained in given list."""
+  courseID_not_in: [String!]
+
+  """All values less than the given value."""
+  courseID_lt: String
+
+  """All values less than or equal the given value."""
+  courseID_lte: String
+
+  """All values greater than the given value."""
+  courseID_gt: String
+
+  """All values greater than or equal the given value."""
+  courseID_gte: String
+
+  """All values containing the given string."""
+  courseID_contains: String
+
+  """All values not containing the given string."""
+  courseID_not_contains: String
+
+  """All values starting with the given string."""
+  courseID_starts_with: String
+
+  """All values not starting with the given string."""
+  courseID_not_starts_with: String
+
+  """All values ending with the given string."""
+  courseID_ends_with: String
+
+  """All values not ending with the given string."""
+  courseID_not_ends_with: String
+  name: String
+
+  """All values that are not equal to given value."""
+  name_not: String
+
+  """All values that are contained in given list."""
+  name_in: [String!]
+
+  """All values that are not contained in given list."""
+  name_not_in: [String!]
+
+  """All values less than the given value."""
+  name_lt: String
+
+  """All values less than or equal the given value."""
+  name_lte: String
+
+  """All values greater than the given value."""
+  name_gt: String
+
+  """All values greater than or equal the given value."""
+  name_gte: String
+
+  """All values containing the given string."""
+  name_contains: String
+
+  """All values not containing the given string."""
+  name_not_contains: String
+
+  """All values starting with the given string."""
+  name_starts_with: String
+
+  """All values not starting with the given string."""
+  name_not_starts_with: String
+
+  """All values ending with the given string."""
+  name_ends_with: String
+
+  """All values not ending with the given string."""
+  name_not_ends_with: String
+}
+
+type CourseSubscriptionPayload {
+  mutation: MutationType!
+  node: Course
+  updatedFields: [String!]
+  previousValues: CoursePreviousValues
+}
+
+input CourseSubscriptionWhereInput {
+  """Logical AND on all given filters."""
+  AND: [CourseSubscriptionWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [CourseSubscriptionWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [CourseSubscriptionWhereInput!]
+
+  """The subscription event gets dispatched when it's listed in mutation_in"""
+  mutation_in: [MutationType!]
+
+  """
+  The subscription event gets only dispatched when one of the updated fields names is included in this list
+  """
+  updatedFields_contains: String
+
+  """
+  The subscription event gets only dispatched when all of the field names included in this list have been updated
+  """
+  updatedFields_contains_every: [String!]
+
+  """
+  The subscription event gets only dispatched when some of the field names included in this list have been updated
+  """
+  updatedFields_contains_some: [String!]
+  node: CourseWhereInput
+}
+
+input CourseUpdateInput {
+  courseID: String
+  name: String
+  sessions: SessionUpdateManyWithoutCourseInput
+  students: StudentUpdateManyWithoutCoursesInput
+}
+
+input CourseUpdateManyDataInput {
+  courseID: String
+  name: String
+}
+
+input CourseUpdateManyMutationInput {
+  courseID: String
+  name: String
+}
+
+input CourseUpdateManyWithoutStudentsInput {
+  create: [CourseCreateWithoutStudentsInput!]
+  connect: [CourseWhereUniqueInput!]
+  set: [CourseWhereUniqueInput!]
+  disconnect: [CourseWhereUniqueInput!]
+  delete: [CourseWhereUniqueInput!]
+  update: [CourseUpdateWithWhereUniqueWithoutStudentsInput!]
+  updateMany: [CourseUpdateManyWithWhereNestedInput!]
+  deleteMany: [CourseScalarWhereInput!]
+  upsert: [CourseUpsertWithWhereUniqueWithoutStudentsInput!]
+}
+
+input CourseUpdateManyWithWhereNestedInput {
+  where: CourseScalarWhereInput!
+  data: CourseUpdateManyDataInput!
+}
+
+input CourseUpdateOneRequiredWithoutSessionsInput {
+  create: CourseCreateWithoutSessionsInput
+  connect: CourseWhereUniqueInput
+  update: CourseUpdateWithoutSessionsDataInput
+  upsert: CourseUpsertWithoutSessionsInput
+}
+
+input CourseUpdateWithoutSessionsDataInput {
+  courseID: String
+  name: String
+  students: StudentUpdateManyWithoutCoursesInput
+}
+
+input CourseUpdateWithoutStudentsDataInput {
+  courseID: String
+  name: String
+  sessions: SessionUpdateManyWithoutCourseInput
+}
+
+input CourseUpdateWithWhereUniqueWithoutStudentsInput {
+  where: CourseWhereUniqueInput!
+  data: CourseUpdateWithoutStudentsDataInput!
+}
+
+input CourseUpsertWithoutSessionsInput {
+  update: CourseUpdateWithoutSessionsDataInput!
+  create: CourseCreateWithoutSessionsInput!
+}
+
+input CourseUpsertWithWhereUniqueWithoutStudentsInput {
+  where: CourseWhereUniqueInput!
+  update: CourseUpdateWithoutStudentsDataInput!
+  create: CourseCreateWithoutStudentsInput!
+}
+
+input CourseWhereInput {
+  """Logical AND on all given filters."""
+  AND: [CourseWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [CourseWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [CourseWhereInput!]
+  id: ID
+
+  """All values that are not equal to given value."""
+  id_not: ID
+
+  """All values that are contained in given list."""
+  id_in: [ID!]
+
+  """All values that are not contained in given list."""
+  id_not_in: [ID!]
+
+  """All values less than the given value."""
+  id_lt: ID
+
+  """All values less than or equal the given value."""
+  id_lte: ID
+
+  """All values greater than the given value."""
+  id_gt: ID
+
+  """All values greater than or equal the given value."""
+  id_gte: ID
+
+  """All values containing the given string."""
+  id_contains: ID
+
+  """All values not containing the given string."""
+  id_not_contains: ID
+
+  """All values starting with the given string."""
+  id_starts_with: ID
+
+  """All values not starting with the given string."""
+  id_not_starts_with: ID
+
+  """All values ending with the given string."""
+  id_ends_with: ID
+
+  """All values not ending with the given string."""
+  id_not_ends_with: ID
+  courseID: String
+
+  """All values that are not equal to given value."""
+  courseID_not: String
+
+  """All values that are contained in given list."""
+  courseID_in: [String!]
+
+  """All values that are not contained in given list."""
+  courseID_not_in: [String!]
+
+  """All values less than the given value."""
+  courseID_lt: String
+
+  """All values less than or equal the given value."""
+  courseID_lte: String
+
+  """All values greater than the given value."""
+  courseID_gt: String
+
+  """All values greater than or equal the given value."""
+  courseID_gte: String
+
+  """All values containing the given string."""
+  courseID_contains: String
+
+  """All values not containing the given string."""
+  courseID_not_contains: String
+
+  """All values starting with the given string."""
+  courseID_starts_with: String
+
+  """All values not starting with the given string."""
+  courseID_not_starts_with: String
+
+  """All values ending with the given string."""
+  courseID_ends_with: String
+
+  """All values not ending with the given string."""
+  courseID_not_ends_with: String
+  name: String
+
+  """All values that are not equal to given value."""
+  name_not: String
+
+  """All values that are contained in given list."""
+  name_in: [String!]
+
+  """All values that are not contained in given list."""
+  name_not_in: [String!]
+
+  """All values less than the given value."""
+  name_lt: String
+
+  """All values less than or equal the given value."""
+  name_lte: String
+
+  """All values greater than the given value."""
+  name_gt: String
+
+  """All values greater than or equal the given value."""
+  name_gte: String
+
+  """All values containing the given string."""
+  name_contains: String
+
+  """All values not containing the given string."""
+  name_not_contains: String
+
+  """All values starting with the given string."""
+  name_starts_with: String
+
+  """All values not starting with the given string."""
+  name_not_starts_with: String
+
+  """All values ending with the given string."""
+  name_ends_with: String
+
+  """All values not ending with the given string."""
+  name_not_ends_with: String
+  sessions_every: SessionWhereInput
+  sessions_some: SessionWhereInput
+  sessions_none: SessionWhereInput
+  students_every: StudentWhereInput
+  students_some: StudentWhereInput
+  students_none: StudentWhereInput
+}
+
+input CourseWhereUniqueInput {
+  id: ID
+  courseID: String
+}
+
+"""Raw JSON value"""
+scalar Json
+
+"""
+The `Long` scalar type represents non-fractional signed whole numeric values.
+Long can represent values between -(2^63) and 2^63 - 1.
+"""
+scalar Long
+
+type Mutation {
+  createCourse(data: CourseCreateInput!): Course!
+  createShift(data: ShiftCreateInput!): Shift!
+  createRoom(data: RoomCreateInput!): Room!
+  createSession(data: SessionCreateInput!): Session!
+  createStudent(data: StudentCreateInput!): Student!
+  updateCourse(data: CourseUpdateInput!, where: CourseWhereUniqueInput!): Course
+  updateShift(data: ShiftUpdateInput!, where: ShiftWhereUniqueInput!): Shift
+  updateRoom(data: RoomUpdateInput!, where: RoomWhereUniqueInput!): Room
+  updateSession(data: SessionUpdateInput!, where: SessionWhereUniqueInput!): Session
+  updateStudent(data: StudentUpdateInput!, where: StudentWhereUniqueInput!): Student
+  deleteCourse(where: CourseWhereUniqueInput!): Course
+  deleteShift(where: ShiftWhereUniqueInput!): Shift
+  deleteRoom(where: RoomWhereUniqueInput!): Room
+  deleteSession(where: SessionWhereUniqueInput!): Session
+  deleteStudent(where: StudentWhereUniqueInput!): Student
+  upsertCourse(where: CourseWhereUniqueInput!, create: CourseCreateInput!, update: CourseUpdateInput!): Course!
+  upsertShift(where: ShiftWhereUniqueInput!, create: ShiftCreateInput!, update: ShiftUpdateInput!): Shift!
+  upsertRoom(where: RoomWhereUniqueInput!, create: RoomCreateInput!, update: RoomUpdateInput!): Room!
+  upsertSession(where: SessionWhereUniqueInput!, create: SessionCreateInput!, update: SessionUpdateInput!): Session!
+  upsertStudent(where: StudentWhereUniqueInput!, create: StudentCreateInput!, update: StudentUpdateInput!): Student!
+  updateManyCourses(data: CourseUpdateManyMutationInput!, where: CourseWhereInput): BatchPayload!
+  updateManyShifts(data: ShiftUpdateManyMutationInput!, where: ShiftWhereInput): BatchPayload!
+  updateManyRooms(data: RoomUpdateManyMutationInput!, where: RoomWhereInput): BatchPayload!
+  updateManyStudents(data: StudentUpdateManyMutationInput!, where: StudentWhereInput): BatchPayload!
+  deleteManyCourses(where: CourseWhereInput): BatchPayload!
+  deleteManyShifts(where: ShiftWhereInput): BatchPayload!
+  deleteManyRooms(where: RoomWhereInput): BatchPayload!
+  deleteManySessions(where: SessionWhereInput): BatchPayload!
+  deleteManyStudents(where: StudentWhereInput): BatchPayload!
+  executeRaw(database: PrismaDatabase, query: String!): Json!
+}
+
+enum MutationType {
+  CREATED
+  UPDATED
+  DELETED
+}
+
+"""An object with an ID"""
+interface Node {
+  """The id of the object."""
+  id: ID!
+}
+
+"""Information about pagination in a connection."""
+type PageInfo {
+  """When paginating forwards, are there more items?"""
+  hasNextPage: Boolean!
+
+  """When paginating backwards, are there more items?"""
+  hasPreviousPage: Boolean!
+
+  """When paginating backwards, the cursor to continue."""
+  startCursor: String
+
+  """When paginating forwards, the cursor to continue."""
+  endCursor: String
+}
+
+enum PrismaDatabase {
+  default
+}
+
+type Query {
+  courses(where: CourseWhereInput, orderBy: CourseOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Course]!
+  shifts(where: ShiftWhereInput, orderBy: ShiftOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Shift]!
+  rooms(where: RoomWhereInput, orderBy: RoomOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Room]!
+  sessions(where: SessionWhereInput, orderBy: SessionOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Session]!
+  students(where: StudentWhereInput, orderBy: StudentOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Student]!
+  course(where: CourseWhereUniqueInput!): Course
+  shift(where: ShiftWhereUniqueInput!): Shift
+  room(where: RoomWhereUniqueInput!): Room
+  session(where: SessionWhereUniqueInput!): Session
+  student(where: StudentWhereUniqueInput!): Student
+  coursesConnection(where: CourseWhereInput, orderBy: CourseOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): CourseConnection!
+  shiftsConnection(where: ShiftWhereInput, orderBy: ShiftOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): ShiftConnection!
+  roomsConnection(where: RoomWhereInput, orderBy: RoomOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): RoomConnection!
+  sessionsConnection(where: SessionWhereInput, orderBy: SessionOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): SessionConnection!
+  studentsConnection(where: StudentWhereInput, orderBy: StudentOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): StudentConnection!
+
+  """Fetches an object given its ID"""
+  node(
+    """The ID of an object"""
+    id: ID!
+  ): Node
+}
+
+type Room implements Node {
+  id: ID!
+  roomID: String!
+  totalPC: Int!
+  sessions(where: SessionWhereInput, orderBy: SessionOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Session!]
+}
+
+"""A connection to a list of items."""
+type RoomConnection {
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+
+  """A list of edges."""
+  edges: [RoomEdge]!
+  aggregate: AggregateRoom!
+}
+
+input RoomCreateInput {
+  id: ID
+  roomID: String!
+  totalPC: Int!
+  sessions: SessionCreateManyWithoutRoomInput
+}
+
+input RoomCreateOneWithoutSessionsInput {
+  create: RoomCreateWithoutSessionsInput
+  connect: RoomWhereUniqueInput
+}
+
+input RoomCreateWithoutSessionsInput {
+  id: ID
+  roomID: String!
+  totalPC: Int!
+}
+
+"""An edge in a connection."""
+type RoomEdge {
+  """The item at the end of the edge."""
+  node: Room!
+
+  """A cursor for use in pagination."""
+  cursor: String!
+}
+
+enum RoomOrderByInput {
+  id_ASC
+  id_DESC
+  roomID_ASC
+  roomID_DESC
+  totalPC_ASC
+  totalPC_DESC
+}
+
+type RoomPreviousValues {
+  id: ID!
+  roomID: String!
+  totalPC: Int!
+}
+
+type RoomSubscriptionPayload {
+  mutation: MutationType!
+  node: Room
+  updatedFields: [String!]
+  previousValues: RoomPreviousValues
+}
+
+input RoomSubscriptionWhereInput {
+  """Logical AND on all given filters."""
+  AND: [RoomSubscriptionWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [RoomSubscriptionWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [RoomSubscriptionWhereInput!]
+
+  """The subscription event gets dispatched when it's listed in mutation_in"""
+  mutation_in: [MutationType!]
+
+  """
+  The subscription event gets only dispatched when one of the updated fields names is included in this list
+  """
+  updatedFields_contains: String
+
+  """
+  The subscription event gets only dispatched when all of the field names included in this list have been updated
+  """
+  updatedFields_contains_every: [String!]
+
+  """
+  The subscription event gets only dispatched when some of the field names included in this list have been updated
+  """
+  updatedFields_contains_some: [String!]
+  node: RoomWhereInput
+}
+
+input RoomUpdateInput {
+  roomID: String
+  totalPC: Int
+  sessions: SessionUpdateManyWithoutRoomInput
+}
+
+input RoomUpdateManyMutationInput {
+  roomID: String
+  totalPC: Int
+}
+
+input RoomUpdateOneRequiredWithoutSessionsInput {
+  create: RoomCreateWithoutSessionsInput
+  connect: RoomWhereUniqueInput
+  update: RoomUpdateWithoutSessionsDataInput
+  upsert: RoomUpsertWithoutSessionsInput
+}
+
+input RoomUpdateWithoutSessionsDataInput {
+  roomID: String
+  totalPC: Int
+}
+
+input RoomUpsertWithoutSessionsInput {
+  update: RoomUpdateWithoutSessionsDataInput!
+  create: RoomCreateWithoutSessionsInput!
+}
+
+input RoomWhereInput {
+  """Logical AND on all given filters."""
+  AND: [RoomWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [RoomWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [RoomWhereInput!]
+  id: ID
+
+  """All values that are not equal to given value."""
+  id_not: ID
+
+  """All values that are contained in given list."""
+  id_in: [ID!]
+
+  """All values that are not contained in given list."""
+  id_not_in: [ID!]
+
+  """All values less than the given value."""
+  id_lt: ID
+
+  """All values less than or equal the given value."""
+  id_lte: ID
+
+  """All values greater than the given value."""
+  id_gt: ID
+
+  """All values greater than or equal the given value."""
+  id_gte: ID
+
+  """All values containing the given string."""
+  id_contains: ID
+
+  """All values not containing the given string."""
+  id_not_contains: ID
+
+  """All values starting with the given string."""
+  id_starts_with: ID
+
+  """All values not starting with the given string."""
+  id_not_starts_with: ID
+
+  """All values ending with the given string."""
+  id_ends_with: ID
+
+  """All values not ending with the given string."""
+  id_not_ends_with: ID
+  roomID: String
+
+  """All values that are not equal to given value."""
+  roomID_not: String
+
+  """All values that are contained in given list."""
+  roomID_in: [String!]
+
+  """All values that are not contained in given list."""
+  roomID_not_in: [String!]
+
+  """All values less than the given value."""
+  roomID_lt: String
+
+  """All values less than or equal the given value."""
+  roomID_lte: String
+
+  """All values greater than the given value."""
+  roomID_gt: String
+
+  """All values greater than or equal the given value."""
+  roomID_gte: String
+
+  """All values containing the given string."""
+  roomID_contains: String
+
+  """All values not containing the given string."""
+  roomID_not_contains: String
+
+  """All values starting with the given string."""
+  roomID_starts_with: String
+
+  """All values not starting with the given string."""
+  roomID_not_starts_with: String
+
+  """All values ending with the given string."""
+  roomID_ends_with: String
+
+  """All values not ending with the given string."""
+  roomID_not_ends_with: String
+  totalPC: Int
+
+  """All values that are not equal to given value."""
+  totalPC_not: Int
+
+  """All values that are contained in given list."""
+  totalPC_in: [Int!]
+
+  """All values that are not contained in given list."""
+  totalPC_not_in: [Int!]
+
+  """All values less than the given value."""
+  totalPC_lt: Int
+
+  """All values less than or equal the given value."""
+  totalPC_lte: Int
+
+  """All values greater than the given value."""
+  totalPC_gt: Int
+
+  """All values greater than or equal the given value."""
+  totalPC_gte: Int
+  sessions_every: SessionWhereInput
+  sessions_some: SessionWhereInput
+  sessions_none: SessionWhereInput
+}
+
+input RoomWhereUniqueInput {
+  id: ID
+  roomID: String
+}
+
+type Session implements Node {
+  id: ID!
+  students(where: StudentWhereInput, orderBy: StudentOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Student!]
+  course: Course!
+  shift: Shift!
+  room: Room!
+}
+
+"""A connection to a list of items."""
+type SessionConnection {
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+
+  """A list of edges."""
+  edges: [SessionEdge]!
+  aggregate: AggregateSession!
+}
+
+input SessionCreateInput {
+  id: ID
+  students: StudentCreateManyInput
+  course: CourseCreateOneWithoutSessionsInput!
+  shift: ShiftCreateOneWithoutSessionsInput!
+  room: RoomCreateOneWithoutSessionsInput!
+}
+
+input SessionCreateManyWithoutCourseInput {
+  create: [SessionCreateWithoutCourseInput!]
+  connect: [SessionWhereUniqueInput!]
+}
+
+input SessionCreateManyWithoutRoomInput {
+  create: [SessionCreateWithoutRoomInput!]
+  connect: [SessionWhereUniqueInput!]
+}
+
+input SessionCreateManyWithoutShiftInput {
+  create: [SessionCreateWithoutShiftInput!]
+  connect: [SessionWhereUniqueInput!]
+}
+
+input SessionCreateWithoutCourseInput {
+  id: ID
+  students: StudentCreateManyInput
+  shift: ShiftCreateOneWithoutSessionsInput!
+  room: RoomCreateOneWithoutSessionsInput!
+}
+
+input SessionCreateWithoutRoomInput {
+  id: ID
+  students: StudentCreateManyInput
+  course: CourseCreateOneWithoutSessionsInput!
+  shift: ShiftCreateOneWithoutSessionsInput!
+}
+
+input SessionCreateWithoutShiftInput {
+  id: ID
+  students: StudentCreateManyInput
+  course: CourseCreateOneWithoutSessionsInput!
+  room: RoomCreateOneWithoutSessionsInput!
+}
+
+"""An edge in a connection."""
+type SessionEdge {
+  """The item at the end of the edge."""
+  node: Session!
+
+  """A cursor for use in pagination."""
+  cursor: String!
+}
+
+enum SessionOrderByInput {
+  id_ASC
+  id_DESC
+}
+
+type SessionPreviousValues {
+  id: ID!
+}
+
+input SessionScalarWhereInput {
+  """Logical AND on all given filters."""
+  AND: [SessionScalarWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [SessionScalarWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [SessionScalarWhereInput!]
+  id: ID
+
+  """All values that are not equal to given value."""
+  id_not: ID
+
+  """All values that are contained in given list."""
+  id_in: [ID!]
+
+  """All values that are not contained in given list."""
+  id_not_in: [ID!]
+
+  """All values less than the given value."""
+  id_lt: ID
+
+  """All values less than or equal the given value."""
+  id_lte: ID
+
+  """All values greater than the given value."""
+  id_gt: ID
+
+  """All values greater than or equal the given value."""
+  id_gte: ID
+
+  """All values containing the given string."""
+  id_contains: ID
+
+  """All values not containing the given string."""
+  id_not_contains: ID
+
+  """All values starting with the given string."""
+  id_starts_with: ID
+
+  """All values not starting with the given string."""
+  id_not_starts_with: ID
+
+  """All values ending with the given string."""
+  id_ends_with: ID
+
+  """All values not ending with the given string."""
+  id_not_ends_with: ID
+}
+
+type SessionSubscriptionPayload {
+  mutation: MutationType!
+  node: Session
+  updatedFields: [String!]
+  previousValues: SessionPreviousValues
+}
+
+input SessionSubscriptionWhereInput {
+  """Logical AND on all given filters."""
+  AND: [SessionSubscriptionWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [SessionSubscriptionWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [SessionSubscriptionWhereInput!]
+
+  """The subscription event gets dispatched when it's listed in mutation_in"""
+  mutation_in: [MutationType!]
+
+  """
+  The subscription event gets only dispatched when one of the updated fields names is included in this list
+  """
+  updatedFields_contains: String
+
+  """
+  The subscription event gets only dispatched when all of the field names included in this list have been updated
+  """
+  updatedFields_contains_every: [String!]
+
+  """
+  The subscription event gets only dispatched when some of the field names included in this list have been updated
+  """
+  updatedFields_contains_some: [String!]
+  node: SessionWhereInput
+}
+
+input SessionUpdateInput {
+  students: StudentUpdateManyInput
+  course: CourseUpdateOneRequiredWithoutSessionsInput
+  shift: ShiftUpdateOneRequiredWithoutSessionsInput
+  room: RoomUpdateOneRequiredWithoutSessionsInput
+}
+
+input SessionUpdateManyWithoutCourseInput {
+  create: [SessionCreateWithoutCourseInput!]
+  connect: [SessionWhereUniqueInput!]
+  set: [SessionWhereUniqueInput!]
+  disconnect: [SessionWhereUniqueInput!]
+  delete: [SessionWhereUniqueInput!]
+  update: [SessionUpdateWithWhereUniqueWithoutCourseInput!]
+  deleteMany: [SessionScalarWhereInput!]
+  upsert: [SessionUpsertWithWhereUniqueWithoutCourseInput!]
+}
+
+input SessionUpdateManyWithoutRoomInput {
+  create: [SessionCreateWithoutRoomInput!]
+  connect: [SessionWhereUniqueInput!]
+  set: [SessionWhereUniqueInput!]
+  disconnect: [SessionWhereUniqueInput!]
+  delete: [SessionWhereUniqueInput!]
+  update: [SessionUpdateWithWhereUniqueWithoutRoomInput!]
+  deleteMany: [SessionScalarWhereInput!]
+  upsert: [SessionUpsertWithWhereUniqueWithoutRoomInput!]
+}
+
+input SessionUpdateManyWithoutShiftInput {
+  create: [SessionCreateWithoutShiftInput!]
+  connect: [SessionWhereUniqueInput!]
+  set: [SessionWhereUniqueInput!]
+  disconnect: [SessionWhereUniqueInput!]
+  delete: [SessionWhereUniqueInput!]
+  update: [SessionUpdateWithWhereUniqueWithoutShiftInput!]
+  deleteMany: [SessionScalarWhereInput!]
+  upsert: [SessionUpsertWithWhereUniqueWithoutShiftInput!]
+}
+
+input SessionUpdateWithoutCourseDataInput {
+  students: StudentUpdateManyInput
+  shift: ShiftUpdateOneRequiredWithoutSessionsInput
+  room: RoomUpdateOneRequiredWithoutSessionsInput
+}
+
+input SessionUpdateWithoutRoomDataInput {
+  students: StudentUpdateManyInput
+  course: CourseUpdateOneRequiredWithoutSessionsInput
+  shift: ShiftUpdateOneRequiredWithoutSessionsInput
+}
+
+input SessionUpdateWithoutShiftDataInput {
+  students: StudentUpdateManyInput
+  course: CourseUpdateOneRequiredWithoutSessionsInput
+  room: RoomUpdateOneRequiredWithoutSessionsInput
+}
+
+input SessionUpdateWithWhereUniqueWithoutCourseInput {
+  where: SessionWhereUniqueInput!
+  data: SessionUpdateWithoutCourseDataInput!
+}
+
+input SessionUpdateWithWhereUniqueWithoutRoomInput {
+  where: SessionWhereUniqueInput!
+  data: SessionUpdateWithoutRoomDataInput!
+}
+
+input SessionUpdateWithWhereUniqueWithoutShiftInput {
+  where: SessionWhereUniqueInput!
+  data: SessionUpdateWithoutShiftDataInput!
+}
+
+input SessionUpsertWithWhereUniqueWithoutCourseInput {
+  where: SessionWhereUniqueInput!
+  update: SessionUpdateWithoutCourseDataInput!
+  create: SessionCreateWithoutCourseInput!
+}
+
+input SessionUpsertWithWhereUniqueWithoutRoomInput {
+  where: SessionWhereUniqueInput!
+  update: SessionUpdateWithoutRoomDataInput!
+  create: SessionCreateWithoutRoomInput!
+}
+
+input SessionUpsertWithWhereUniqueWithoutShiftInput {
+  where: SessionWhereUniqueInput!
+  update: SessionUpdateWithoutShiftDataInput!
+  create: SessionCreateWithoutShiftInput!
+}
+
+input SessionWhereInput {
+  """Logical AND on all given filters."""
+  AND: [SessionWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [SessionWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [SessionWhereInput!]
+  id: ID
+
+  """All values that are not equal to given value."""
+  id_not: ID
+
+  """All values that are contained in given list."""
+  id_in: [ID!]
+
+  """All values that are not contained in given list."""
+  id_not_in: [ID!]
+
+  """All values less than the given value."""
+  id_lt: ID
+
+  """All values less than or equal the given value."""
+  id_lte: ID
+
+  """All values greater than the given value."""
+  id_gt: ID
+
+  """All values greater than or equal the given value."""
+  id_gte: ID
+
+  """All values containing the given string."""
+  id_contains: ID
+
+  """All values not containing the given string."""
+  id_not_contains: ID
+
+  """All values starting with the given string."""
+  id_starts_with: ID
+
+  """All values not starting with the given string."""
+  id_not_starts_with: ID
+
+  """All values ending with the given string."""
+  id_ends_with: ID
+
+  """All values not ending with the given string."""
+  id_not_ends_with: ID
+  students_every: StudentWhereInput
+  students_some: StudentWhereInput
+  students_none: StudentWhereInput
+  course: CourseWhereInput
+  shift: ShiftWhereInput
+  room: RoomWhereInput
+}
+
+input SessionWhereUniqueInput {
+  id: ID
+}
+
+type Shift implements Node {
+  id: ID!
+  date: String!
+  startTime: String!
+  endTime: String!
+  sessions(where: SessionWhereInput, orderBy: SessionOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Session!]
+}
+
+"""A connection to a list of items."""
+type ShiftConnection {
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+
+  """A list of edges."""
+  edges: [ShiftEdge]!
+  aggregate: AggregateShift!
+}
+
+input ShiftCreateInput {
+  id: ID
+  date: String!
+  startTime: String!
+  endTime: String!
+  sessions: SessionCreateManyWithoutShiftInput
+}
+
+input ShiftCreateOneWithoutSessionsInput {
+  create: ShiftCreateWithoutSessionsInput
+  connect: ShiftWhereUniqueInput
+}
+
+input ShiftCreateWithoutSessionsInput {
+  id: ID
+  date: String!
+  startTime: String!
+  endTime: String!
+}
+
+"""An edge in a connection."""
+type ShiftEdge {
+  """The item at the end of the edge."""
+  node: Shift!
+
+  """A cursor for use in pagination."""
+  cursor: String!
+}
+
+enum ShiftOrderByInput {
+  id_ASC
+  id_DESC
+  date_ASC
+  date_DESC
+  startTime_ASC
+  startTime_DESC
+  endTime_ASC
+  endTime_DESC
+}
+
+type ShiftPreviousValues {
+  id: ID!
+  date: String!
+  startTime: String!
+  endTime: String!
+}
+
+type ShiftSubscriptionPayload {
+  mutation: MutationType!
+  node: Shift
+  updatedFields: [String!]
+  previousValues: ShiftPreviousValues
+}
+
+input ShiftSubscriptionWhereInput {
+  """Logical AND on all given filters."""
+  AND: [ShiftSubscriptionWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [ShiftSubscriptionWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [ShiftSubscriptionWhereInput!]
+
+  """The subscription event gets dispatched when it's listed in mutation_in"""
+  mutation_in: [MutationType!]
+
+  """
+  The subscription event gets only dispatched when one of the updated fields names is included in this list
+  """
+  updatedFields_contains: String
+
+  """
+  The subscription event gets only dispatched when all of the field names included in this list have been updated
+  """
+  updatedFields_contains_every: [String!]
+
+  """
+  The subscription event gets only dispatched when some of the field names included in this list have been updated
+  """
+  updatedFields_contains_some: [String!]
+  node: ShiftWhereInput
+}
+
+input ShiftUpdateInput {
+  date: String
+  startTime: String
+  endTime: String
+  sessions: SessionUpdateManyWithoutShiftInput
+}
+
+input ShiftUpdateManyMutationInput {
+  date: String
+  startTime: String
+  endTime: String
+}
+
+input ShiftUpdateOneRequiredWithoutSessionsInput {
+  create: ShiftCreateWithoutSessionsInput
+  connect: ShiftWhereUniqueInput
+  update: ShiftUpdateWithoutSessionsDataInput
+  upsert: ShiftUpsertWithoutSessionsInput
+}
+
+input ShiftUpdateWithoutSessionsDataInput {
+  date: String
+  startTime: String
+  endTime: String
+}
+
+input ShiftUpsertWithoutSessionsInput {
+  update: ShiftUpdateWithoutSessionsDataInput!
+  create: ShiftCreateWithoutSessionsInput!
+}
+
+input ShiftWhereInput {
+  """Logical AND on all given filters."""
+  AND: [ShiftWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [ShiftWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [ShiftWhereInput!]
+  id: ID
+
+  """All values that are not equal to given value."""
+  id_not: ID
+
+  """All values that are contained in given list."""
+  id_in: [ID!]
+
+  """All values that are not contained in given list."""
+  id_not_in: [ID!]
+
+  """All values less than the given value."""
+  id_lt: ID
+
+  """All values less than or equal the given value."""
+  id_lte: ID
+
+  """All values greater than the given value."""
+  id_gt: ID
+
+  """All values greater than or equal the given value."""
+  id_gte: ID
+
+  """All values containing the given string."""
+  id_contains: ID
+
+  """All values not containing the given string."""
+  id_not_contains: ID
+
+  """All values starting with the given string."""
+  id_starts_with: ID
+
+  """All values not starting with the given string."""
+  id_not_starts_with: ID
+
+  """All values ending with the given string."""
+  id_ends_with: ID
+
+  """All values not ending with the given string."""
+  id_not_ends_with: ID
+  date: String
+
+  """All values that are not equal to given value."""
+  date_not: String
+
+  """All values that are contained in given list."""
+  date_in: [String!]
+
+  """All values that are not contained in given list."""
+  date_not_in: [String!]
+
+  """All values less than the given value."""
+  date_lt: String
+
+  """All values less than or equal the given value."""
+  date_lte: String
+
+  """All values greater than the given value."""
+  date_gt: String
+
+  """All values greater than or equal the given value."""
+  date_gte: String
+
+  """All values containing the given string."""
+  date_contains: String
+
+  """All values not containing the given string."""
+  date_not_contains: String
+
+  """All values starting with the given string."""
+  date_starts_with: String
+
+  """All values not starting with the given string."""
+  date_not_starts_with: String
+
+  """All values ending with the given string."""
+  date_ends_with: String
+
+  """All values not ending with the given string."""
+  date_not_ends_with: String
+  startTime: String
+
+  """All values that are not equal to given value."""
+  startTime_not: String
+
+  """All values that are contained in given list."""
+  startTime_in: [String!]
+
+  """All values that are not contained in given list."""
+  startTime_not_in: [String!]
+
+  """All values less than the given value."""
+  startTime_lt: String
+
+  """All values less than or equal the given value."""
+  startTime_lte: String
+
+  """All values greater than the given value."""
+  startTime_gt: String
+
+  """All values greater than or equal the given value."""
+  startTime_gte: String
+
+  """All values containing the given string."""
+  startTime_contains: String
+
+  """All values not containing the given string."""
+  startTime_not_contains: String
+
+  """All values starting with the given string."""
+  startTime_starts_with: String
+
+  """All values not starting with the given string."""
+  startTime_not_starts_with: String
+
+  """All values ending with the given string."""
+  startTime_ends_with: String
+
+  """All values not ending with the given string."""
+  startTime_not_ends_with: String
+  endTime: String
+
+  """All values that are not equal to given value."""
+  endTime_not: String
+
+  """All values that are contained in given list."""
+  endTime_in: [String!]
+
+  """All values that are not contained in given list."""
+  endTime_not_in: [String!]
+
+  """All values less than the given value."""
+  endTime_lt: String
+
+  """All values less than or equal the given value."""
+  endTime_lte: String
+
+  """All values greater than the given value."""
+  endTime_gt: String
+
+  """All values greater than or equal the given value."""
+  endTime_gte: String
+
+  """All values containing the given string."""
+  endTime_contains: String
+
+  """All values not containing the given string."""
+  endTime_not_contains: String
+
+  """All values starting with the given string."""
+  endTime_starts_with: String
+
+  """All values not starting with the given string."""
+  endTime_not_starts_with: String
+
+  """All values ending with the given string."""
+  endTime_ends_with: String
+
+  """All values not ending with the given string."""
+  endTime_not_ends_with: String
+  sessions_every: SessionWhereInput
+  sessions_some: SessionWhereInput
+  sessions_none: SessionWhereInput
+}
+
+input ShiftWhereUniqueInput {
+  id: ID
+}
+
+type Student implements Node {
+  id: ID!
+  studentID: String!
+  name: String!
+  courses(where: CourseWhereInput, orderBy: CourseOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Course!]
+}
+
+"""A connection to a list of items."""
+type StudentConnection {
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+
+  """A list of edges."""
+  edges: [StudentEdge]!
+  aggregate: AggregateStudent!
+}
+
+input StudentCreateInput {
+  id: ID
+  studentID: String!
+  name: String!
+  courses: CourseCreateManyWithoutStudentsInput
+}
+
+input StudentCreateManyInput {
+  create: [StudentCreateInput!]
+  connect: [StudentWhereUniqueInput!]
+}
+
+input StudentCreateManyWithoutCoursesInput {
+  create: [StudentCreateWithoutCoursesInput!]
+  connect: [StudentWhereUniqueInput!]
+}
+
+input StudentCreateWithoutCoursesInput {
+  id: ID
+  studentID: String!
+  name: String!
+}
+
+"""An edge in a connection."""
+type StudentEdge {
+  """The item at the end of the edge."""
+  node: Student!
+
+  """A cursor for use in pagination."""
+  cursor: String!
+}
+
+enum StudentOrderByInput {
+  id_ASC
+  id_DESC
+  studentID_ASC
+  studentID_DESC
+  name_ASC
+  name_DESC
+}
+
+type StudentPreviousValues {
+  id: ID!
+  studentID: String!
+  name: String!
+}
+
+input StudentScalarWhereInput {
+  """Logical AND on all given filters."""
+  AND: [StudentScalarWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [StudentScalarWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [StudentScalarWhereInput!]
+  id: ID
+
+  """All values that are not equal to given value."""
+  id_not: ID
+
+  """All values that are contained in given list."""
+  id_in: [ID!]
+
+  """All values that are not contained in given list."""
+  id_not_in: [ID!]
+
+  """All values less than the given value."""
+  id_lt: ID
+
+  """All values less than or equal the given value."""
+  id_lte: ID
+
+  """All values greater than the given value."""
+  id_gt: ID
+
+  """All values greater than or equal the given value."""
+  id_gte: ID
+
+  """All values containing the given string."""
+  id_contains: ID
+
+  """All values not containing the given string."""
+  id_not_contains: ID
+
+  """All values starting with the given string."""
+  id_starts_with: ID
+
+  """All values not starting with the given string."""
+  id_not_starts_with: ID
+
+  """All values ending with the given string."""
+  id_ends_with: ID
+
+  """All values not ending with the given string."""
+  id_not_ends_with: ID
+  studentID: String
+
+  """All values that are not equal to given value."""
+  studentID_not: String
+
+  """All values that are contained in given list."""
+  studentID_in: [String!]
+
+  """All values that are not contained in given list."""
+  studentID_not_in: [String!]
+
+  """All values less than the given value."""
+  studentID_lt: String
+
+  """All values less than or equal the given value."""
+  studentID_lte: String
+
+  """All values greater than the given value."""
+  studentID_gt: String
+
+  """All values greater than or equal the given value."""
+  studentID_gte: String
+
+  """All values containing the given string."""
+  studentID_contains: String
+
+  """All values not containing the given string."""
+  studentID_not_contains: String
+
+  """All values starting with the given string."""
+  studentID_starts_with: String
+
+  """All values not starting with the given string."""
+  studentID_not_starts_with: String
+
+  """All values ending with the given string."""
+  studentID_ends_with: String
+
+  """All values not ending with the given string."""
+  studentID_not_ends_with: String
+  name: String
+
+  """All values that are not equal to given value."""
+  name_not: String
+
+  """All values that are contained in given list."""
+  name_in: [String!]
+
+  """All values that are not contained in given list."""
+  name_not_in: [String!]
+
+  """All values less than the given value."""
+  name_lt: String
+
+  """All values less than or equal the given value."""
+  name_lte: String
+
+  """All values greater than the given value."""
+  name_gt: String
+
+  """All values greater than or equal the given value."""
+  name_gte: String
+
+  """All values containing the given string."""
+  name_contains: String
+
+  """All values not containing the given string."""
+  name_not_contains: String
+
+  """All values starting with the given string."""
+  name_starts_with: String
+
+  """All values not starting with the given string."""
+  name_not_starts_with: String
+
+  """All values ending with the given string."""
+  name_ends_with: String
+
+  """All values not ending with the given string."""
+  name_not_ends_with: String
+}
+
+type StudentSubscriptionPayload {
+  mutation: MutationType!
+  node: Student
+  updatedFields: [String!]
+  previousValues: StudentPreviousValues
+}
+
+input StudentSubscriptionWhereInput {
+  """Logical AND on all given filters."""
+  AND: [StudentSubscriptionWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [StudentSubscriptionWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [StudentSubscriptionWhereInput!]
+
+  """The subscription event gets dispatched when it's listed in mutation_in"""
+  mutation_in: [MutationType!]
+
+  """
+  The subscription event gets only dispatched when one of the updated fields names is included in this list
+  """
+  updatedFields_contains: String
+
+  """
+  The subscription event gets only dispatched when all of the field names included in this list have been updated
+  """
+  updatedFields_contains_every: [String!]
+
+  """
+  The subscription event gets only dispatched when some of the field names included in this list have been updated
+  """
+  updatedFields_contains_some: [String!]
+  node: StudentWhereInput
+}
+
+input StudentUpdateDataInput {
+  studentID: String
+  name: String
+  courses: CourseUpdateManyWithoutStudentsInput
+}
+
+input StudentUpdateInput {
+  studentID: String
+  name: String
+  courses: CourseUpdateManyWithoutStudentsInput
+}
+
+input StudentUpdateManyDataInput {
+  studentID: String
+  name: String
+}
+
+input StudentUpdateManyInput {
+  create: [StudentCreateInput!]
+  connect: [StudentWhereUniqueInput!]
+  set: [StudentWhereUniqueInput!]
+  disconnect: [StudentWhereUniqueInput!]
+  delete: [StudentWhereUniqueInput!]
+  update: [StudentUpdateWithWhereUniqueNestedInput!]
+  updateMany: [StudentUpdateManyWithWhereNestedInput!]
+  deleteMany: [StudentScalarWhereInput!]
+  upsert: [StudentUpsertWithWhereUniqueNestedInput!]
+}
+
+input StudentUpdateManyMutationInput {
+  studentID: String
+  name: String
+}
+
+input StudentUpdateManyWithoutCoursesInput {
+  create: [StudentCreateWithoutCoursesInput!]
+  connect: [StudentWhereUniqueInput!]
+  set: [StudentWhereUniqueInput!]
+  disconnect: [StudentWhereUniqueInput!]
+  delete: [StudentWhereUniqueInput!]
+  update: [StudentUpdateWithWhereUniqueWithoutCoursesInput!]
+  updateMany: [StudentUpdateManyWithWhereNestedInput!]
+  deleteMany: [StudentScalarWhereInput!]
+  upsert: [StudentUpsertWithWhereUniqueWithoutCoursesInput!]
+}
+
+input StudentUpdateManyWithWhereNestedInput {
+  where: StudentScalarWhereInput!
+  data: StudentUpdateManyDataInput!
+}
+
+input StudentUpdateWithoutCoursesDataInput {
+  studentID: String
+  name: String
+}
+
+input StudentUpdateWithWhereUniqueNestedInput {
+  where: StudentWhereUniqueInput!
+  data: StudentUpdateDataInput!
+}
+
+input StudentUpdateWithWhereUniqueWithoutCoursesInput {
+  where: StudentWhereUniqueInput!
+  data: StudentUpdateWithoutCoursesDataInput!
+}
+
+input StudentUpsertWithWhereUniqueNestedInput {
+  where: StudentWhereUniqueInput!
+  update: StudentUpdateDataInput!
+  create: StudentCreateInput!
+}
+
+input StudentUpsertWithWhereUniqueWithoutCoursesInput {
+  where: StudentWhereUniqueInput!
+  update: StudentUpdateWithoutCoursesDataInput!
+  create: StudentCreateWithoutCoursesInput!
+}
+
+input StudentWhereInput {
+  """Logical AND on all given filters."""
+  AND: [StudentWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [StudentWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [StudentWhereInput!]
+  id: ID
+
+  """All values that are not equal to given value."""
+  id_not: ID
+
+  """All values that are contained in given list."""
+  id_in: [ID!]
+
+  """All values that are not contained in given list."""
+  id_not_in: [ID!]
+
+  """All values less than the given value."""
+  id_lt: ID
+
+  """All values less than or equal the given value."""
+  id_lte: ID
+
+  """All values greater than the given value."""
+  id_gt: ID
+
+  """All values greater than or equal the given value."""
+  id_gte: ID
+
+  """All values containing the given string."""
+  id_contains: ID
+
+  """All values not containing the given string."""
+  id_not_contains: ID
+
+  """All values starting with the given string."""
+  id_starts_with: ID
+
+  """All values not starting with the given string."""
+  id_not_starts_with: ID
+
+  """All values ending with the given string."""
+  id_ends_with: ID
+
+  """All values not ending with the given string."""
+  id_not_ends_with: ID
+  studentID: String
+
+  """All values that are not equal to given value."""
+  studentID_not: String
+
+  """All values that are contained in given list."""
+  studentID_in: [String!]
+
+  """All values that are not contained in given list."""
+  studentID_not_in: [String!]
+
+  """All values less than the given value."""
+  studentID_lt: String
+
+  """All values less than or equal the given value."""
+  studentID_lte: String
+
+  """All values greater than the given value."""
+  studentID_gt: String
+
+  """All values greater than or equal the given value."""
+  studentID_gte: String
+
+  """All values containing the given string."""
+  studentID_contains: String
+
+  """All values not containing the given string."""
+  studentID_not_contains: String
+
+  """All values starting with the given string."""
+  studentID_starts_with: String
+
+  """All values not starting with the given string."""
+  studentID_not_starts_with: String
+
+  """All values ending with the given string."""
+  studentID_ends_with: String
+
+  """All values not ending with the given string."""
+  studentID_not_ends_with: String
+  name: String
+
+  """All values that are not equal to given value."""
+  name_not: String
+
+  """All values that are contained in given list."""
+  name_in: [String!]
+
+  """All values that are not contained in given list."""
+  name_not_in: [String!]
+
+  """All values less than the given value."""
+  name_lt: String
+
+  """All values less than or equal the given value."""
+  name_lte: String
+
+  """All values greater than the given value."""
+  name_gt: String
+
+  """All values greater than or equal the given value."""
+  name_gte: String
+
+  """All values containing the given string."""
+  name_contains: String
+
+  """All values not containing the given string."""
+  name_not_contains: String
+
+  """All values starting with the given string."""
+  name_starts_with: String
+
+  """All values not starting with the given string."""
+  name_not_starts_with: String
+
+  """All values ending with the given string."""
+  name_ends_with: String
+
+  """All values not ending with the given string."""
+  name_not_ends_with: String
+  courses_every: CourseWhereInput
+  courses_some: CourseWhereInput
+  courses_none: CourseWhereInput
+}
+
+input StudentWhereUniqueInput {
+  id: ID
+  studentID: String
+}
+
+type Subscription {
+  course(where: CourseSubscriptionWhereInput): CourseSubscriptionPayload
+  shift(where: ShiftSubscriptionWhereInput): ShiftSubscriptionPayload
+  room(where: RoomSubscriptionWhereInput): RoomSubscriptionPayload
+  session(where: SessionSubscriptionWhereInput): SessionSubscriptionPayload
+  student(where: StudentSubscriptionWhereInput): StudentSubscriptionPayload
+}
