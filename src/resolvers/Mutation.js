@@ -61,11 +61,17 @@ const Mutation = {
             studentsFromCourse.push(data.studentID);
         }
         for (const studentID of data.studentIDs) {
-            if (studentsFromCourse.includes(studentID)) {
+            const studentSessionsOnShift = await prisma.query.sessions({
+                where: {
+                    students_some: { studentID },
+                    shift: data.shift
+                }
+            }, '{ id }');
+            console.log(studentSessionsOnShift);
+            if (studentSessionsOnShift.length === 0 && studentsFromCourse.includes(studentID)) {
                 opArgs.data.students.connect.push({ studentID });
             }
         }
-        console.log(JSON.stringify(opArgs, null, 2));
         return prisma.mutation.createSession(opArgs, info);
     },
 
