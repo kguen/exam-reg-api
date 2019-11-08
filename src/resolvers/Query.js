@@ -25,17 +25,20 @@ const Query = {
     },
     sessions(parent, { query }, { prisma }, info) {
         const opArgs = { where: {} };
-        if (query.roomID) {
-            opArgs.where.room = { roomID: query.roomID };
-        }
-        if (query.courseID) {
-            opArgs.where.course = { courseID: query.courseID };
-        }
-        if (query.studentID) {
-            opArgs.where.students_some = { studentID: query.studentID };
-        }
-        if (query.shift) {
-            opArgs.where.shift = query.shift;
+        console.log('start sessions query');
+        if (query) {
+            if (query.roomID) {
+                opArgs.where.room = { roomID: query.roomID };
+            }
+            if (query.courseID) {
+                opArgs.where.course = { courseID: query.courseID };
+            }
+            if (query.studentID) {
+                opArgs.where.students_some = { studentID: query.studentID };
+            }
+            if (query.shift) {
+                opArgs.where.shift = query.shift;
+            }
         }
         return prisma.query.sessions(opArgs, info);
     },
