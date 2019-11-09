@@ -12,6 +12,11 @@ type Mutation {
   createSession(data: SessionCreateInput!): Session!
   createRoom(data: RoomCreateInput!): Room!
   createShift(data: ShiftCreateInput!): Shift!
+  deleteStudent(studentID: String!): Student!
+  deleteCourse(courseID: String!): Course!
+  deleteSession(where: SessionWhereUniqueInput!): Session!
+  deleteShift(where: ShiftWhereUniqueInput!): Shift!
+  deleteRoom(roomID: String!): Room!
 }
 
 input StudentCreateInput {
@@ -23,35 +28,41 @@ input StudentCreateInput {
 input CourseCreateInput {
   courseID: String!
   name: String!
+  studentIDs: [String!]!
 }
 
 input SessionCreateInput {
   courseID: String!
-  shift: SessionConnectShiftInput!
+  shift: ShiftWhereUniqueInput!
   roomID: String!
   studentIDs: [String!]!
 }
 
-input SessionConnectShiftInput {
-  date: String!
-  startTime: String!
-  endTime: String!
-}
-
 input SessionQueryInput {
-  shift: SessionQueryShiftInput
+  shift: ShiftQueryInput
   courseID: String
   roomID: String
   studentID: String
 }
 
-input SessionQueryShiftInput {
+input SessionWhereUniqueInput {
+  shift: ShiftWhereUniqueInput!
+  roomID: String!
+}
+
+input ShiftCreateInput {
+  date: String!
+  startTime: String!
+  endTime: String!
+}
+
+input ShiftQueryInput {
   date: String
   startTime: String
   endTime: String
 }
 
-input ShiftCreateInput {
+input ShiftWhereUniqueInput {
   date: String!
   startTime: String!
   endTime: String!

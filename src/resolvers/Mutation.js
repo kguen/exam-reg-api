@@ -1,9 +1,5 @@
 const Mutation = {
-    async createStudent(parent, { data }, { prisma }, info) {
-        const studentExist = await prisma.exists.Student({ studentID: data.studentID });
-        if (studentExist) {
-            throw new Error(`Student ${data.studentID} already exist!`);
-        } 
+    createStudent(parent, { data }, { prisma }, info) {
         const opArgs = { 
             studentID: data.studentID,
             name: data.name.toLowerCase(), 
@@ -11,36 +7,61 @@ const Mutation = {
                 connect: []
             }
         };
-        for (let courseID of data.courseIDs) {
-            const courseExist = await prisma.exists.Course({ courseID });
-            if (courseExist) {
+        if (data.courseIDs) {
+            for (let courseID of data.courseIDs) {
                 opArgs.courses.connect.push({ courseID });
             }
         }
         return prisma.mutation.createStudent({ data: opArgs }, info);
     },
 
-    async createSession(parent, { data }, { prisma }, info) {
-        const courseExist = await prisma.exists.Course({ courseID: data.courseID });
-        if (!courseExist) {
-            throw new Error(`Course ${data.courseID} not exist!`);
+    createCourse(parent, { data }, { prisma }, info) {
+        const opArgs = { 
+            courseID: data.courseID,
+            name: data.name.toLowerCase(), 
+            students: {
+                connect: []
+            }
+        };
+        if (data.studentIDs) {
+            for (let studentID of data.studentIDs) {
+                opArgs.students.connect.push({ studentID });
+            }
         }
+        return prisma.mutation.createCourse({ data: opArgs }, info);
+    },
+
+    async createShift(parent, { data }, { prisma }, info) {
+        const shiftsWithinDate = await prisma.query.shifts({
+            where: { date: data.date }
+        }, '{ startTime endTime }');
+        
+        for (let shift of shiftsWithinDate) {
+            if ((shift.startTime <= data.startTime && data.startTime < shift.endTime) ||
+                (data.startTime < shift.startTime && shift.startTime < data.endTime)) {
+                throw new Error('Another shift already organized at your time of choice!');
+            }
+        }
+        return prisma.mutation.createShift({ data }, info);
+    },
+
+    createRoom(parent, { data }, { prisma }, info) {
+        return prisma.mutation.createRoom({ data }, info);
+    },
+
+    async createSession(parent, { data }, { prisma }, info) {
         const shifts = await prisma.query.shifts({ 
             where: { ...data.shift }
         }, '{ id }');
         if (!shifts.length) {
-            throw new Error(`No shift exist at your time of choice!`);
-        }
-        const roomExist = await prisma.exists.Room({ roomID: data.roomID });
-        if (!roomExist) {
-            throw new Error(`Room ${data.roomID} not exist!`);
+            throw new Error(`There's no shift that existed at your time of choice!`);
         }
         const sessionExist = await prisma.exists.Session({ 
             shift: data.shift,
             room: { roomID: data.roomID }  
         });
         if (sessionExist) {
-            throw new Error('Another session already exist at your time and room of choice!');
+            throw new Error('Another session already existed at your time and room of choice!');
         }
 
         const opArgs = {
@@ -67,42 +88,40 @@ const Mutation = {
                     shift: data.shift
                 }
             }, '{ id }');
-            console.log(studentSessionsOnShift);
-            if (studentSessionsOnShift.length === 0 && studentsFromCourse.includes(studentID)) {
+            if (!studentsFromCourse.includes(studentID)) {
+                throw new Error(`Student ${studentID} did not enroll in course ${data.courseID}!`); 
+            } else if (studentSessionsOnShift.length) {
+                throw new Error(`Student ${studentID} has another exam session at your time of choice!`);
+            } else {
                 opArgs.data.students.connect.push({ studentID });
             }
         }
         return prisma.mutation.createSession(opArgs, info);
     },
 
-    async createCourse(parent, { data }, { prisma }, info) {
-        const courseExist = await prisma.exists.Course({ courseID: data.courseID });
-        if (courseExist) {
-            throw new Error(`Course ${data.courseID} already exist!`);
-        }
-        return prisma.mutation.createCourse({ data }, info);
+    deleteStudent(parent, args, { prisma }, info) {
+        return prisma.mutation.deleteStudent({
+            where: { studentID: args.studentID }
+        }, info);
     },
 
-    async createShift(parent, { data }, { prisma }, info) {
-        const shiftsWithinDate = await prisma.query.shifts({
-            where: { date: data.date }
-        }, '{ startTime endTime }');
-        
-        for (let shift of shiftsWithinDate) {
-            if ((shift.startTime <= data.startTime && data.startTime < shift.endTime) ||
-                (data.startTime < shift.startTime && shift.startTime < data.endTime)) {
-                throw new Error('Another shift already organized at your time of choice!');
-            }
-        }
-        return prisma.mutation.createShift({ data }, info);
+    deleteCourse(parent, args, { prisma }, info) {
+        return prisma.mutation.deleteCourse({
+            where: { courseID: args.courseID }
+        }, info);
     },
 
-    async createRoom(parent, { data }, { prisma }, info) {
-        const roomExist = await prisma.exists.Room({ roomID: data.roomID });
-        if (roomExist) {
-            throw new Error(`Room ${data.roomID} already exist!`);
-        }
-        return prisma.mutation.createRoom({ data }, info);
+    deleteRoom(parent, args, { prisma }, info) {
+        return prisma.mutation.deleteRoom({
+            where: { roomID: args.roomID }
+        }, info);
+    },
+
+    deleteShift(parent, { where }, { prisma }, info) {
+        const shifts = prisma.query.shifts({ where }, '{ id }');
+        return prisma.mutation.deleteShift({
+            where: { id: shifts[0].id }
+        }, info);
     }
 };
 

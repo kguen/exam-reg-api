@@ -25,7 +25,6 @@ const Query = {
     },
     sessions(parent, { query }, { prisma }, info) {
         const opArgs = { where: {} };
-        console.log('start sessions query');
         if (query) {
             if (query.roomID) {
                 opArgs.where.room = { roomID: query.roomID };
