@@ -16,7 +16,7 @@ services:
         databases:
           default:
             connector: postgres
-            host: db
+            host: host.docker.internal
             database: exam-reg
             user: examreg
             password: prisma
@@ -37,7 +37,9 @@ services:
       POSTGRES_PASSWORD: prisma
       POSTGRES_DB: exam-reg
     volumes:
-      - postgres:/var/lib/postgresql/data
+      - type: bind
+        source: ~/postgres-data
+        target: /var/lib/postgresql/data
   api:
     build:
       context: .
@@ -56,5 +58,3 @@ services:
       global:
 networks:
   global:
-volumes:
-  postgres:
