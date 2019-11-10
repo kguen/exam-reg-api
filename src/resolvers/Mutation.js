@@ -119,6 +119,7 @@ const Mutation = {
 
     deleteShift(parent, { where }, { prisma }, info) {
         const shifts = prisma.query.shifts({ where }, '{ id }');
+        console.log(shifts);
         return prisma.mutation.deleteShift({
             where: { id: shifts[0].id }
         }, info);
