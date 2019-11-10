@@ -2,6 +2,7 @@ version: '3.7'
 services:
   prisma:
     image: prismagraphql/prisma:1.34
+    container_name: prisma
     depends_on:
       - db
     command: ["./scripts/wait-for-it.sh", "db:5432"]
@@ -27,6 +28,7 @@ services:
       global:
   db:
     image: postgres:latest
+    container_name: postgres
     restart: always
     ports:
       - "5432:5432"
@@ -44,6 +46,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+    container_name: api
     depends_on:
       - db
     restart: always
