@@ -76,6 +76,9 @@ const Mutation = {
         const courseData = await prisma.query.course({
             where: { courseID: data.courseID }
         }, '{ students { studentID } }');
+        const roomData = await prisma.query.room({
+            where: { roomID: data.roomID }
+        }, '{ totalPC }');
 
         let studentsFromCourse = [];
         for (const data of courseData.students) {
@@ -95,6 +98,9 @@ const Mutation = {
             } else {
                 opArgs.data.students.connect.push({ studentID });
             }
+        }
+        if (opArgs.data.students.connect.length > roomData.totalPC) {
+            throw new Error(`Room ${data.roomID} cannot contain more than ${roomData.totalPC} students!`);
         }
         return prisma.mutation.createSession(opArgs, info);
     },
@@ -117,11 +123,65 @@ const Mutation = {
         }, info);
     },
 
-    deleteShift(parent, { where }, { prisma }, info) {
-        const shifts = prisma.query.shifts({ where }, '{ id }');
-        console.log(shifts);
+    async deleteShift(parent, { where }, { prisma }, info) {
+        const shifts = await prisma.query.shifts({ where }, '{ id }');
+        if (shifts.length === 0) {
+            throw new Error('Shift not exist!');
+        }
         return prisma.mutation.deleteShift({
             where: { id: shifts[0].id }
+        }, info);
+    },
+    
+    updateStudent(parent, args, { prisma }, info) {
+        if (args.data.name) {
+            args.data.name = args.data.name.toLowerCase();
+        }
+        if (args.data.courses) {
+            if (args.data.courses.connect) {
+                let prismaConnect = [];
+                for (const courseID of args.data.courses.connect) {
+                    prismaConnect.push({ courseID });
+                }
+                args.data.courses.connect = prismaConnect;
+            }
+            if (args.data.courses.disconnect) {
+                let prismaDisconnect = [];
+                for (const courseID of args.data.courses.disconnect) {
+                    prismaDisconnect.push({ courseID });
+                }
+                args.data.courses.disconnect = prismaDisconnect;
+            }
+        }
+        return prisma.mutation.updateStudent({
+            where: { studentID: args.studentID },
+            data: args.data
+        }, info);
+    },
+
+    updateCourse(parent, args, { prisma }, info) {
+        if (args.data.name) {
+            args.data.name = args.data.name.toLowerCase();
+        }
+        if (args.data.students) {
+            if (args.data.students.connect) {
+                let prismaConnect = [];
+                for (const studentID of args.data.students.connect) {
+                    prismaConnect.push({ studentID });
+                }
+                args.data.students.connect = prismaConnect;
+            }
+            if (args.data.students.disconnect) {
+                let prismaDisconnect = [];
+                for (const studentID of args.data.students.disconnect) {
+                    prismaDisconnect.push({ studentID });
+                }
+                args.data.students.disconnect = prismaDisconnect;
+            }
+        }
+        return prisma.mutation.updateCourse({
+            where: { courseID: args.courseID },
+            data: args.data
         }, info);
     }
 };
