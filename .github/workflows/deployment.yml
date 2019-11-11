@@ -1,0 +1,37 @@
+name: Deploy to Kubernetess
+on:
+  push:
+    branches:
+      - feature/github_actions_kubernetes
+jobs:
+  deploy:
+    name: Build Publish Deploy API
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+        with:
+          fetch-depth: 1
+      - name: Docker Login
+        run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD	}}
+      - name: Build Image
+        run: docker build  -t ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REGISTRY_URL }}:${{ github.sha }} .
+      - name: Push Image
+        run: docker push ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REGISTRY_URL }}:${{ github.sha }}
+      - name: Azure Login
+        run: az login --service-principal --username ${{ secrets.AZURE_USERNAME }} --password ${{ secrets.AZURE_PASSWORD }} --tenant ${{ secrets.AZURE_TENANT }}
+      - name: Set Kubeconfig
+        run: az aks get-credentials --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }} --name ${{ secrets.AZURE_CLUSTER_NAME }}
+      - name: Get Kubeconfig
+        run: cat ~/.kube/config
+      - name: Set Image Tag
+        run: sed -i 's|GITHUB_SHA|${{ github.sha }}|' ./k8s/api.yml
+      - name: Check yaml file
+        run: grep -E "image" ./k8s/api.yml
+      - name: Apply all yaml file
+        run: cd k8s && kubectl apply -f .
+      - name: Prisma Port Forward
+        run: kubectl port-forward svc/prisma 4466:4466 --namespace api &
+      - name: Deploy Database
+        run: kubectl exec --namespace api $(kubectl get pods --selector=app=examreg-api --all-namespaces -o json | jq '.items[0].metadata.name' | sed 's|"||g') -- prisma deploy
+      - name: Check result
+        run: kubectl get all --all-namespaces

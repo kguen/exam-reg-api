@@ -1,0 +1,74 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: examreg-api
+  namespace: api
+spec:
+  selector:
+    matchLabels:
+      app: examreg-api
+  template:
+    metadata:
+      labels:
+        app: examreg-api
+    spec:
+      containers:
+      - name: examreg-api
+        image: hughdo/examreg-api:GITHUB_SHA
+        env:
+        - name: PRISMA_ENDPOINT
+          value: http://prisma:4466/exam
+        # resources:
+        #   limits:
+        #     memory: "128Mi"
+        #     cpu: "50m"
+        ports:
+        - containerPort: 4000
+        # livenessProbe:
+        #   httpGet:
+        #     path: /
+        #     port: 4000
+        #   initialDelaySeconds: 30
+        #   periodSeconds: 3
+        # readinessProbe:
+        #   httpGet:
+        #     path: /
+        #     port: 4000
+        #   initialDelaySeconds: 31
+        #   periodSeconds: 3
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: examreg-api-svc
+  namespace: api
+spec:
+  selector:
+    app: examreg-api
+  ports:
+  - port: 4000
+    targetPort: 4000
+  type: ClusterIP
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: examreg-api-ingress
+  namespace: api
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+spec:
+  tls:
+  - hosts:
+    - examreg.hughdo.dev
+    secretName: examreg-webapp-tls
+  rules:
+  - host: examreg.hughdo.dev
+    http:
+      paths:
+      - path: /api(/|$)(.*)
+        backend:
+          serviceName: examreg-api-svc
+          servicePort: 4000
