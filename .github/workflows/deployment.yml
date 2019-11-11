@@ -32,6 +32,6 @@ jobs:
       - name: Prisma Port Forward
         run: kubectl port-forward svc/prisma 4466:4466 --namespace api &
       - name: Deploy Database
-        run: kubectl exec --namespace api $(kubectl get pods --selector=app=examreg-api --all-namespaces -o json | jq '.items[0].metadata.name' | sed 's|"||g') -- prisma deploy
+        run: npm install -g prisma && prisma deploy
       - name: Check result
         run: kubectl get all --all-namespaces

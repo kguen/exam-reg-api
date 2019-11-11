@@ -5,7 +5,6 @@ EXPOSE 4000
 WORKDIR /usr/src/app
 COPY ["package.json", "package-lock.json*", "npm-shrinkwrap.json*", "./"]
 RUN npm install  --dev --silent && npm cache clean --force
-RUN npm install -g prisma
 
 FROM base as dev
 ENV NODE_ENV development
