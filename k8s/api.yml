@@ -18,10 +18,6 @@ spec:
         env:
         - name: PRISMA_ENDPOINT
           value: http://prisma:4466/exam
-        # resources:
-        #   limits:
-        #     memory: "128Mi"
-        #     cpu: "50m"
         ports:
         - containerPort: 4000
         # livenessProbe:

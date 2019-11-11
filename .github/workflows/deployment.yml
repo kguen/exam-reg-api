@@ -2,7 +2,7 @@ name: Deploy to Kubernetess
 on:
   push:
     branches:
-      - feature/github_actions_kubernetes
+      - master
 jobs:
   deploy:
     name: Build Publish Deploy API
