@@ -31,7 +31,11 @@ jobs:
         run: cd k8s && kubectl apply -f .
       - name: Prisma Port Forward
         run: kubectl port-forward svc/prisma 4466:4466 --namespace api &
-      - name: Deploy Database
-        run: npm install -g prisma && prisma deploy
+      - name: Install Prisma and Deploy
+        run: |
+          mkdir ./.npm-global
+          npm config set prefix './.npm-global'
+          npm install -g prisma
+          ./.npm-global/bin/prisma deploy
       - name: Check result
         run: kubectl get all --all-namespaces
