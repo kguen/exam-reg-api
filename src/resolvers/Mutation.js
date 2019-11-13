@@ -32,11 +32,14 @@ const Mutation = {
     },
 
     async createShift(parent, { data }, { prisma }, info) {
+        if (data.startTime > data.endTime) {
+            throw new Error('Shift starting time cannot be greater than shift end time!');
+        }
         const shiftsWithinDate = await prisma.query.shifts({
             where: { date: data.date }
         }, '{ startTime endTime }');
         
-        for (let shift of shiftsWithinDate) {
+        for (const shift of shiftsWithinDate) {
             if ((shift.startTime <= data.startTime && data.startTime < shift.endTime) ||
                 (data.startTime < shift.startTime && shift.startTime < data.endTime)) {
                 throw new Error('Another shift already organized at your time of choice!');
@@ -181,6 +184,56 @@ const Mutation = {
         }
         return prisma.mutation.updateCourse({
             where: { courseID: args.courseID },
+            data: args.data
+        }, info);
+    },
+
+    async updateShift(parent, args, { prisma }, info) {
+        let newShift = await prisma.query.shifts({ where: args.where }, '{ id date startTime endTime }');
+        newShift = newShift[0];
+        if (args.data.date) {
+            newShift.date = args.data.date;
+        }
+        if (args.data.startTime) {
+            newShift.startTime = args.data.startTime;
+        }
+        if (args.data.endTime) {
+            newShift.endTime = args.data.endTime;
+        }
+        if (newShift.startTime > newShift.endTime) {
+            throw new Error('Shift starting time cannot be greater than shift end time!');
+        }
+        const shiftsWithinDate = await prisma.query.shifts({
+            where: { date: newShift.date }
+        }, '{ startTime endTime }');
+        
+        for (const shift of shiftsWithinDate) {
+            if ((shift.startTime <= newShift.startTime && newShift.startTime < shift.endTime) ||
+                (newShift.startTime < shift.startTime && shift.startTime < newShift.endTime)) {
+                throw new Error('Another shift already organized at your time of choice!');
+            }
+        }
+        return prisma.mutation.updateShift({
+            where: { id: newShift.id },
+            data: args.data
+        }, info);
+    },
+
+    async updateRoom(parent, args, { prisma }, info) {
+        if (args.data.totalPC) {
+            const sessionsAtRoom = await prisma.query.sessions({
+                where: {
+                    room: { roomID: args.roomID }
+                }
+            }, '{ students { id } }');
+            for (const item of sessionsAtRoom) {
+                if (item.students.length > args.data.totalPC) {
+                    throw new Error(`An exam session at room ${args.roomID} with more than ${args.data.totalPC} students exists!`);
+                }
+            }
+        }
+        return prisma.mutation.updateRoom({
+            where: { roomID: args.roomID },
             data: args.data
         }, info);
     }
