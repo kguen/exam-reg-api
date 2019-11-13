@@ -36,7 +36,7 @@ input StudentUpdateInput {
 input CourseCreateInput {
   courseID: String!
   name: String!
-  studentIDs: [String!]!
+  studentIDs: [String!]
 }
 
 input CourseUpdateInput {
