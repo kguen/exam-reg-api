@@ -19,6 +19,7 @@ type Mutation {
   deleteRoom(roomID: String!): Room!
   updateStudent(studentID: String!, data: StudentUpdateInput!): Student!
   updateCourse(courseID: String!, data: CourseUpdateInput!): Course!
+  updateSession(where: SessionWhereUniqueInput!, data: SessionUpdateInput!): Session!
   updateShift(where: ShiftWhereUniqueInput!, data: ShiftUpdateInput!): Shift!
   updateRoom(roomID: String!, data: RoomUpdateInput!): Room!
 }
@@ -52,6 +53,13 @@ input SessionCreateInput {
   shift: ShiftWhereUniqueInput!
   roomID: String!
   studentIDs: [String!]!
+}
+
+input SessionUpdateInput {
+  courseID: String
+  shift: ShiftWhereUniqueInput
+  roomID: String
+  students: ArrayUpdateInput
 }
 
 input SessionQueryInput {
