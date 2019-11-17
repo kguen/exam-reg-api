@@ -270,7 +270,7 @@ const Mutation = {
                 throw new Error(`Student ${studentID} did not enroll in course ${newSession.course.courseID}!`); 
             }
         }
-        if (args.data.shift || args.data.room) {
+        if (args.data.shift || args.data.roomID) {
             if (!args.data.roomID && newSession.room.totalPC < newSession.students.length) {
                 throw new Error(`Room ${newSession.room.roomID} cannot contain more than ${newSession.room.totalPC} students!`);
             
