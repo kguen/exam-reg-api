@@ -1,11 +1,13 @@
+import { removeAccent } from '../utils';
+
 const Query = {
     students(parent, { query }, { prisma }, info) {
         const opArgs = {};
         if (query) {
             opArgs.where = {
                 OR: [
-                    { studentID_contains: query },
-                    { name_contains: query.toLowerCase() }
+                    { studentID_contains: removeAccent(query.toUpperCase()) },
+                    { normalizeName_contains: removeAccent(query.toLowerCase()) }
                 ]
             };
         }
@@ -16,8 +18,8 @@ const Query = {
         if (query) {
             opArgs.where = {
                 OR: [
-                    { courseID_contains: query },
-                    { name_contains: query.toLowerCase() }
+                    { courseID_contains: removeAccent(query.toUpperCase()) },
+                    { normalizeName_contains: removeAccent(query.toLowerCase()) }
                 ]
             };
         }

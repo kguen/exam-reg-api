@@ -1,14 +1,17 @@
+import { removeAccent } from '../utils';
+
 const Mutation = {
     createStudent(parent, { data }, { prisma }, info) {
         const opArgs = { 
             studentID: data.studentID,
-            name: data.name.toLowerCase(), 
+            name: data.name,
+            normalizeName: removeAccent(data.name.toLowerCase()), 
             courses: {
                 connect: []
             }
         };
         if (data.courseIDs) {
-            for (let courseID of data.courseIDs) {
+            for (const courseID of data.courseIDs) {
                 opArgs.courses.connect.push({ courseID });
             }
         }
@@ -18,13 +21,14 @@ const Mutation = {
     createCourse(parent, { data }, { prisma }, info) {
         const opArgs = { 
             courseID: data.courseID,
-            name: data.name.toLowerCase(), 
+            name: data.name,
+            normalizeName: removeAccent(data.name.toLowerCase()),
             students: {
                 connect: []
             }
         };
         if (data.studentIDs) {
-            for (let studentID of data.studentIDs) {
+            for (const studentID of data.studentIDs) {
                 opArgs.students.connect.push({ studentID });
             }
         }

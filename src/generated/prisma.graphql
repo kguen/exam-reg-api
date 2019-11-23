@@ -1,5 +1,5 @@
 # source: http://localhost:4466/exam
-# timestamp: Sun Nov 10 2019 21:16:57 GMT+0700 (Indochina Time)
+# timestamp: Wed Nov 20 2019 13:22:26 GMT+0700 (Indochina Time)
 
 type AggregateCourse {
   count: Int!
@@ -30,6 +30,7 @@ type Course implements Node {
   id: ID!
   courseID: String!
   name: String!
+  normalizeName: String
   sessions(where: SessionWhereInput, orderBy: SessionOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Session!]
   students(where: StudentWhereInput, orderBy: StudentOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Student!]
 }
@@ -48,6 +49,7 @@ input CourseCreateInput {
   id: ID
   courseID: String!
   name: String!
+  normalizeName: String
   sessions: SessionCreateManyWithoutCourseInput
   students: StudentCreateManyWithoutCoursesInput
 }
@@ -66,6 +68,7 @@ input CourseCreateWithoutSessionsInput {
   id: ID
   courseID: String!
   name: String!
+  normalizeName: String
   students: StudentCreateManyWithoutCoursesInput
 }
 
@@ -73,6 +76,7 @@ input CourseCreateWithoutStudentsInput {
   id: ID
   courseID: String!
   name: String!
+  normalizeName: String
   sessions: SessionCreateManyWithoutCourseInput
 }
 
@@ -92,12 +96,15 @@ enum CourseOrderByInput {
   courseID_DESC
   name_ASC
   name_DESC
+  normalizeName_ASC
+  normalizeName_DESC
 }
 
 type CoursePreviousValues {
   id: ID!
   courseID: String!
   name: String!
+  normalizeName: String
 }
 
 input CourseScalarWhereInput {
@@ -229,6 +236,46 @@ input CourseScalarWhereInput {
 
   """All values not ending with the given string."""
   name_not_ends_with: String
+  normalizeName: String
+
+  """All values that are not equal to given value."""
+  normalizeName_not: String
+
+  """All values that are contained in given list."""
+  normalizeName_in: [String!]
+
+  """All values that are not contained in given list."""
+  normalizeName_not_in: [String!]
+
+  """All values less than the given value."""
+  normalizeName_lt: String
+
+  """All values less than or equal the given value."""
+  normalizeName_lte: String
+
+  """All values greater than the given value."""
+  normalizeName_gt: String
+
+  """All values greater than or equal the given value."""
+  normalizeName_gte: String
+
+  """All values containing the given string."""
+  normalizeName_contains: String
+
+  """All values not containing the given string."""
+  normalizeName_not_contains: String
+
+  """All values starting with the given string."""
+  normalizeName_starts_with: String
+
+  """All values not starting with the given string."""
+  normalizeName_not_starts_with: String
+
+  """All values ending with the given string."""
+  normalizeName_ends_with: String
+
+  """All values not ending with the given string."""
+  normalizeName_not_ends_with: String
 }
 
 type CourseSubscriptionPayload {
@@ -271,6 +318,7 @@ input CourseSubscriptionWhereInput {
 input CourseUpdateInput {
   courseID: String
   name: String
+  normalizeName: String
   sessions: SessionUpdateManyWithoutCourseInput
   students: StudentUpdateManyWithoutCoursesInput
 }
@@ -278,11 +326,13 @@ input CourseUpdateInput {
 input CourseUpdateManyDataInput {
   courseID: String
   name: String
+  normalizeName: String
 }
 
 input CourseUpdateManyMutationInput {
   courseID: String
   name: String
+  normalizeName: String
 }
 
 input CourseUpdateManyWithoutStudentsInput {
@@ -312,12 +362,14 @@ input CourseUpdateOneRequiredWithoutSessionsInput {
 input CourseUpdateWithoutSessionsDataInput {
   courseID: String
   name: String
+  normalizeName: String
   students: StudentUpdateManyWithoutCoursesInput
 }
 
 input CourseUpdateWithoutStudentsDataInput {
   courseID: String
   name: String
+  normalizeName: String
   sessions: SessionUpdateManyWithoutCourseInput
 }
 
@@ -466,6 +518,46 @@ input CourseWhereInput {
 
   """All values not ending with the given string."""
   name_not_ends_with: String
+  normalizeName: String
+
+  """All values that are not equal to given value."""
+  normalizeName_not: String
+
+  """All values that are contained in given list."""
+  normalizeName_in: [String!]
+
+  """All values that are not contained in given list."""
+  normalizeName_not_in: [String!]
+
+  """All values less than the given value."""
+  normalizeName_lt: String
+
+  """All values less than or equal the given value."""
+  normalizeName_lte: String
+
+  """All values greater than the given value."""
+  normalizeName_gt: String
+
+  """All values greater than or equal the given value."""
+  normalizeName_gte: String
+
+  """All values containing the given string."""
+  normalizeName_contains: String
+
+  """All values not containing the given string."""
+  normalizeName_not_contains: String
+
+  """All values starting with the given string."""
+  normalizeName_starts_with: String
+
+  """All values not starting with the given string."""
+  normalizeName_not_starts_with: String
+
+  """All values ending with the given string."""
+  normalizeName_ends_with: String
+
+  """All values not ending with the given string."""
+  normalizeName_not_ends_with: String
   sessions_every: SessionWhereInput
   sessions_some: SessionWhereInput
   sessions_none: SessionWhereInput
@@ -1554,6 +1646,7 @@ type Student implements Node {
   id: ID!
   studentID: String!
   name: String!
+  normalizeName: String
   courses(where: CourseWhereInput, orderBy: CourseOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Course!]
 }
 
@@ -1571,6 +1664,7 @@ input StudentCreateInput {
   id: ID
   studentID: String!
   name: String!
+  normalizeName: String
   courses: CourseCreateManyWithoutStudentsInput
 }
 
@@ -1588,6 +1682,7 @@ input StudentCreateWithoutCoursesInput {
   id: ID
   studentID: String!
   name: String!
+  normalizeName: String
 }
 
 """An edge in a connection."""
@@ -1606,12 +1701,15 @@ enum StudentOrderByInput {
   studentID_DESC
   name_ASC
   name_DESC
+  normalizeName_ASC
+  normalizeName_DESC
 }
 
 type StudentPreviousValues {
   id: ID!
   studentID: String!
   name: String!
+  normalizeName: String
 }
 
 input StudentScalarWhereInput {
@@ -1743,6 +1841,46 @@ input StudentScalarWhereInput {
 
   """All values not ending with the given string."""
   name_not_ends_with: String
+  normalizeName: String
+
+  """All values that are not equal to given value."""
+  normalizeName_not: String
+
+  """All values that are contained in given list."""
+  normalizeName_in: [String!]
+
+  """All values that are not contained in given list."""
+  normalizeName_not_in: [String!]
+
+  """All values less than the given value."""
+  normalizeName_lt: String
+
+  """All values less than or equal the given value."""
+  normalizeName_lte: String
+
+  """All values greater than the given value."""
+  normalizeName_gt: String
+
+  """All values greater than or equal the given value."""
+  normalizeName_gte: String
+
+  """All values containing the given string."""
+  normalizeName_contains: String
+
+  """All values not containing the given string."""
+  normalizeName_not_contains: String
+
+  """All values starting with the given string."""
+  normalizeName_starts_with: String
+
+  """All values not starting with the given string."""
+  normalizeName_not_starts_with: String
+
+  """All values ending with the given string."""
+  normalizeName_ends_with: String
+
+  """All values not ending with the given string."""
+  normalizeName_not_ends_with: String
 }
 
 type StudentSubscriptionPayload {
@@ -1785,18 +1923,21 @@ input StudentSubscriptionWhereInput {
 input StudentUpdateDataInput {
   studentID: String
   name: String
+  normalizeName: String
   courses: CourseUpdateManyWithoutStudentsInput
 }
 
 input StudentUpdateInput {
   studentID: String
   name: String
+  normalizeName: String
   courses: CourseUpdateManyWithoutStudentsInput
 }
 
 input StudentUpdateManyDataInput {
   studentID: String
   name: String
+  normalizeName: String
 }
 
 input StudentUpdateManyInput {
@@ -1814,6 +1955,7 @@ input StudentUpdateManyInput {
 input StudentUpdateManyMutationInput {
   studentID: String
   name: String
+  normalizeName: String
 }
 
 input StudentUpdateManyWithoutCoursesInput {
@@ -1836,6 +1978,7 @@ input StudentUpdateManyWithWhereNestedInput {
 input StudentUpdateWithoutCoursesDataInput {
   studentID: String
   name: String
+  normalizeName: String
 }
 
 input StudentUpdateWithWhereUniqueNestedInput {
@@ -1989,6 +2132,46 @@ input StudentWhereInput {
 
   """All values not ending with the given string."""
   name_not_ends_with: String
+  normalizeName: String
+
+  """All values that are not equal to given value."""
+  normalizeName_not: String
+
+  """All values that are contained in given list."""
+  normalizeName_in: [String!]
+
+  """All values that are not contained in given list."""
+  normalizeName_not_in: [String!]
+
+  """All values less than the given value."""
+  normalizeName_lt: String
+
+  """All values less than or equal the given value."""
+  normalizeName_lte: String
+
+  """All values greater than the given value."""
+  normalizeName_gt: String
+
+  """All values greater than or equal the given value."""
+  normalizeName_gte: String
+
+  """All values containing the given string."""
+  normalizeName_contains: String
+
+  """All values not containing the given string."""
+  normalizeName_not_contains: String
+
+  """All values starting with the given string."""
+  normalizeName_starts_with: String
+
+  """All values not starting with the given string."""
+  normalizeName_not_starts_with: String
+
+  """All values ending with the given string."""
+  normalizeName_ends_with: String
+
+  """All values not ending with the given string."""
+  normalizeName_not_ends_with: String
   courses_every: CourseWhereInput
   courses_some: CourseWhereInput
   courses_none: CourseWhereInput

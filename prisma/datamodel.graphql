@@ -2,6 +2,7 @@ type Student {
   id: ID!@id
   studentID: String!@unique
   name: String!
+  normalizeName: String
   courses: [Course!]! @relation(name: "CourseToStudent", onDelete: SET_NULL)
 }
 
@@ -9,6 +10,7 @@ type Course {
   id: ID!@id
   courseID: String!@unique
   name: String!
+  normalizeName: String
   sessions: [Session!]! @relation(name: "SessionToCourse", onDelete: CASCADE)
   students: [Student!]! @relation(name: "CourseToStudent", onDelete: SET_NULL)
 }
