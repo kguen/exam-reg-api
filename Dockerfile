@@ -1,4 +1,4 @@
-FROM node:12.13-alpine as base
+FROM node:12.13.1-alpine3.10 as base
 RUN apk update && apk add bash
 ENV NODE_ENV production
 EXPOSE 4000

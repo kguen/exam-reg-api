@@ -1,39 +1,64 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: prisma
-  namespace: api
+    name: prisma
+    namespace: api
 spec:
-  selector:
-    matchLabels:
-      app: prisma
-  template:
-    metadata:
-      labels:
-        app: prisma
-    spec:
-      # restartPolicy: Always
-      containers:
-      - name: prisma
-        image: prismagraphql/prisma:1.34
-        env:
-          - name: PRISMA_CONFIG
-            valueFrom:
-              configMapKeyRef:
-                name: prisma-configmap
-                key: PRISMA_CONFIG
-        ports:
-        - containerPort: 4466
+    selector:
+        matchLabels:
+            app: prisma
+    template:
+        metadata:
+            labels:
+                app: prisma
+        spec:
+            # restartPolicy: Always
+            containers:
+                - name: prisma
+                  image: prismagraphql/prisma:1.34
+                  env:
+                      - name: PRISMA_CONFIG
+                        valueFrom:
+                            configMapKeyRef:
+                                name: prisma-configmap
+                                key: PRISMA_CONFIG
+                  ports:
+                      - containerPort: 4466
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: prisma
-  namespace: api
+    name: prisma
+    namespace: api
 spec:
-  selector:
-    app: prisma
-  ports:
-  - port: 4466
-    targetPort: 4466
-
+    selector:
+        app: prisma
+    ports:
+        - port: 4466
+          targetPort: 4466
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+    name: examreg-prisma-ingress
+    namespace: api
+    annotations:
+        kubernetes.io/ingress.class: nginx
+        cert-manager.io/cluster-issuer: letsencrypt-prod
+        nginx.ingress.kubernetes.io/rewrite-target: /$2
+        nginx.ingress.kubernetes.io/auth-type: basic
+        nginx.ingress.kubernetes.io/auth-secret: basic-auth
+        nginx.ingress.kubernetes.io/auth-realm: 'Authentication Required'
+spec:
+    tls:
+        - hosts:
+              - examreg.hughdo.dev
+          secretName: examreg-webapp-tls
+    rules:
+        - host: examreg.hughdo.dev
+          http:
+              paths:
+                  - path: /prisma(/|$)(.*)
+                    backend:
+                        serviceName: prisma
+                        servicePort: 4466
