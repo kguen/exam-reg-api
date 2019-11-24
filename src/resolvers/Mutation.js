@@ -1,7 +1,7 @@
 import { removeAccent } from '../utils';
 
 const Mutation = {
-    createStudent(parent, { data }, { prisma }, info) {
+    createStudent: async (parent, { data }, { prisma }, info) => {
         const opArgs = { 
             studentID: data.studentID,
             name: data.name,
@@ -18,7 +18,7 @@ const Mutation = {
         return prisma.mutation.createStudent({ data: opArgs }, info);
     },
 
-    createCourse(parent, { data }, { prisma }, info) {
+    createCourse: async (parent, { data }, { prisma }, info) => {
         const opArgs = { 
             courseID: data.courseID,
             name: data.name,
@@ -35,7 +35,7 @@ const Mutation = {
         return prisma.mutation.createCourse({ data: opArgs }, info);
     },
 
-    async createShift(parent, { data }, { prisma }, info) {
+    createShift: async (parent, { data }, { prisma }, info) => {
         if (data.startTime > data.endTime) {
             throw new Error('Shift starting time cannot be greater than shift end time!');
         }
@@ -52,11 +52,11 @@ const Mutation = {
         return prisma.mutation.createShift({ data }, info);
     },
 
-    createRoom(parent, { data }, { prisma }, info) {
+    createRoom: async (parent, { data }, { prisma }, info) => {
         return prisma.mutation.createRoom({ data }, info);
     },
 
-    async createSession(parent, { data }, { prisma }, info) {
+    createSession: async (parent, { data }, { prisma }, info) => {
         const shifts = await prisma.query.shifts({ 
             where: { ...data.shift }
         }, '{ id }');
@@ -116,19 +116,19 @@ const Mutation = {
         return prisma.mutation.createSession(opArgs, info);
     },
 
-    deleteStudent(parent, args, { prisma }, info) {
+    deleteStudent: async (parent, args, { prisma }, info) => {
         return prisma.mutation.deleteStudent({
             where: { studentID: args.studentID }
         }, info);
     },
 
-    deleteCourse(parent, args, { prisma }, info) {
+    deleteCourse: async (parent, args, { prisma }, info) => {
         return prisma.mutation.deleteCourse({
             where: { courseID: args.courseID }
         }, info);
     },
 
-    async deleteSession(parent, args, { prisma }, info) {
+    deleteSession: async (parent, args, { prisma }, info) => {
         const sessions = await prisma.query.sessions({ 
             where: {
                 shift: args.where.shift,
@@ -143,13 +143,13 @@ const Mutation = {
         }, info);
     },
 
-    deleteRoom(parent, args, { prisma }, info) {
+    deleteRoom: async (parent, args, { prisma }, info) => {
         return prisma.mutation.deleteRoom({
             where: { roomID: args.roomID }
         }, info);
     },
 
-    async deleteShift(parent, { where }, { prisma }, info) {
+    deleteShift: async (parent, { where }, { prisma }, info) => {
         const shifts = await prisma.query.shifts({ where }, '{ id }');
         if (!shifts.length) {
             throw new Error(`There's no shift that exists at your time of choice!`);
@@ -159,7 +159,7 @@ const Mutation = {
         }, info);
     },
     
-    updateStudent(parent, args, { prisma }, info) {
+    updateStudent: async (parent, args, { prisma }, info) => {
         if (args.data.name) {
             args.data.name = args.data.name.toLowerCase();
         }
@@ -185,7 +185,7 @@ const Mutation = {
         }, info);
     },
 
-    updateCourse(parent, args, { prisma }, info) {
+    updateCourse: async (parent, args, { prisma }, info) => {
         if (args.data.name) {
             args.data.name = args.data.name.toLowerCase();
         }
@@ -211,7 +211,7 @@ const Mutation = {
         }, info);
     },
 
-    async updateSession(parent, args, { prisma }, info) {
+    updateSession: async (parent, args, { prisma }, info) => {
         let newSession = await prisma.query.sessions({ 
             where: {
                 shift: args.where.shift,
@@ -315,7 +315,7 @@ const Mutation = {
         }, info);
     },
 
-    async updateShift(parent, args, { prisma }, info) {
+    updateShift: async (parent, args, { prisma }, info) => {
         let newShift = await prisma.query.shifts({ where: args.where }, '{ id date startTime endTime }');
         if (!newShift) {
             throw new Error(`There's no shift that existed at your time of choice!`);
@@ -349,7 +349,7 @@ const Mutation = {
         }, info);
     },
 
-    async updateRoom(parent, args, { prisma }, info) {
+    updateRoom: async (parent, args, { prisma }, info) => {
         if (args.data.totalPC) {
             const sessionsAtRoom = await prisma.query.sessions({
                 where: {

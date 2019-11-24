@@ -1,7 +1,7 @@
 import { removeAccent } from '../utils';
 
 const Query = {
-    students(parent, { query }, { prisma }, info) {
+    students: async (parent, { query }, { prisma }, info) => {
         const opArgs = {};
         if (query) {
             opArgs.where = {
@@ -13,7 +13,7 @@ const Query = {
         }
         return prisma.query.students(opArgs, info);
     },
-    courses(parent, { query }, { prisma }, info) {
+    courses: async (parent, { query }, { prisma }, info) => {
         const opArgs = {};
         if (query) {
             opArgs.where = {
@@ -25,7 +25,7 @@ const Query = {
         }
         return prisma.query.courses(opArgs, info);
     },
-    sessions(parent, { query }, { prisma }, info) {
+    sessions: async (parent, { query }, { prisma }, info) => {
         const opArgs = { where: {} };
         if (query) {
             if (query.roomID) {
@@ -43,10 +43,10 @@ const Query = {
         }
         return prisma.query.sessions(opArgs, info);
     },
-    shifts(parent, args, { prisma }, info) {
+    shifts: async (parent, args, { prisma }, info) => {
         return prisma.query.shifts(null, info);
     },
-    rooms(parent, args, { prisma }, info) {
+    rooms: async (parent, args, { prisma }, info) => {
         return prisma.query.rooms(null, info);
     }
 };
