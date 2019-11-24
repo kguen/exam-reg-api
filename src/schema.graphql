@@ -14,13 +14,13 @@ type Mutation {
   createShift(data: ShiftCreateInput!): Shift!
   deleteStudent(studentID: String!): Student!
   deleteCourse(courseID: String!): Course!
-  deleteSession(where: SessionWhereUniqueInput!): Session!
-  deleteShift(where: ShiftWhereUniqueInput!): Shift!
+  deleteSession(id: ID!): Session!
+  deleteShift(id: ID!): Shift!
   deleteRoom(roomID: String!): Room!
   updateStudent(studentID: String!, data: StudentUpdateInput!): Student!
   updateCourse(courseID: String!, data: CourseUpdateInput!): Course!
-  updateSession(where: SessionWhereUniqueInput!, data: SessionUpdateInput!): Session!
-  updateShift(where: ShiftWhereUniqueInput!, data: ShiftUpdateInput!): Shift!
+  updateSession(id: ID!, data: SessionUpdateInput!): Session!
+  updateShift(id: ID!, data: ShiftUpdateInput!): Shift!
   updateRoom(roomID: String!, data: RoomUpdateInput!): Room!
 }
 
@@ -33,7 +33,7 @@ input StudentCreateInput {
 input StudentUpdateInput {
   studentID: String
   name: String
-  courses: ArrayUpdateInput
+  courseIDs: ArrayUpdateInput
 }
 
 input CourseCreateInput {
@@ -45,21 +45,21 @@ input CourseCreateInput {
 input CourseUpdateInput {
   courseID: String
   name: String
-  students: ArrayUpdateInput 
+  studentIDs: ArrayUpdateInput 
 }
 
 input SessionCreateInput {
   courseID: String!
-  shift: ShiftWhereUniqueInput!
+  shiftID: String! 
   roomID: String!
   studentIDs: [String!]!
 }
 
 input SessionUpdateInput {
   courseID: String
-  shift: ShiftWhereUniqueInput
+  shiftID: ID
   roomID: String
-  students: ArrayUpdateInput
+  studentIDs: ArrayUpdateInput
 }
 
 input SessionQueryInput {
@@ -67,11 +67,6 @@ input SessionQueryInput {
   courseID: String
   roomID: String
   studentID: String
-}
-
-input SessionWhereUniqueInput {
-  shift: ShiftWhereUniqueInput!
-  roomID: String!
 }
 
 input ShiftCreateInput {
@@ -90,12 +85,6 @@ input ShiftUpdateInput {
   date: String
   startTime: String
   endTime: String
-}
-
-input ShiftWhereUniqueInput {
-  date: String!
-  startTime: String!
-  endTime: String!
 }
 
 input RoomCreateInput {
