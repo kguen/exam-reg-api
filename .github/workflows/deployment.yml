@@ -22,7 +22,7 @@ jobs:
       - name: DigitalOcean auth
         run: ~/doctl auth init -t ${{secrets.DIGITALOCEAN_TOKEN}}
       - name: Set Kubeconfig
-        run: ~/doctl kubernetes cluster kubeconfig save ${{secrets.CLUSTER_NAME}}
+        run: ~/doctl kubernetes cluster kubeconfig save exam-reg
       - name: Get Kubeconfig
         run: cat ~/.kube/config
       - name: Set Image Tag
