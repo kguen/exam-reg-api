@@ -4,15 +4,13 @@
     "description": "",
     "main": "index.js",
     "scripts": {
-        "start": "babel-node src/index.js",
+        "start": "./node_modules/babel-cli/bin/babel-node.js src/index.js",
         "dev": "nodemon src/index.js --ignore './postgres-data' --ext js,graphql --exec babel-node",
         "test": "echo \"Error: no test specified\" && exit 1"
     },
     "author": "",
     "license": "ISC",
     "dependencies": {
-        "@babel/core": "^7.7.4",
-        "@babel/node": "^7.7.4",
         "apollo-server-core": "^2.9.12",
         "babel-cli": "^6.26.0",
         "babel-plugin-transform-object-rest-spread": "^6.26.0",
