@@ -11,18 +11,32 @@ jobs:
       - uses: actions/checkout@v1
         with:
           fetch-depth: 1
-      - name: Docker Login
-        run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD	}}
-      - name: Build Image
-        run: docker build  -t ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REGISTRY_URL }}:${{ github.sha }} .
-      - name: Push Image
-        run: docker push ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REGISTRY_URL }}:${{ github.sha }}
       - name: Install doctl
         run: cd ~ && curl -sL https://github.com/digitalocean/doctl/releases/download/v1.34.0/doctl-1.34.0-linux-amd64.tar.gz | tar -xzv
       - name: DigitalOcean auth
         run: ~/doctl auth init -t ${{secrets.DIGITALOCEAN_TOKEN}}
       - name: Set Kubeconfig
         run: ~/doctl kubernetes cluster kubeconfig save exam-reg
+      - name: Prisma Port Forward
+        run: kubectl port-forward svc/prisma 4466:4466 --namespace api &
+      - name: Change npm global dir
+        run: |
+          mkdir ./.npm-global
+          npm config set prefix './.npm-global'
+      - name: Install Prisma and Deploy
+        run: |
+          npm install -g prisma
+          ./.npm-global/bin/prisma deploy
+      - name : Install graphql-cli and get schema
+        run: |
+         npm install -g graphql-cli
+         ./.npm-global/bin/graphql get-schema -p prisma
+      - name: Docker Login
+        run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD	}}
+      - name: Build Image
+        run: docker build  -t ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REGISTRY_URL }}:${{ github.sha }} .
+      - name: Push Image
+        run: docker push ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REGISTRY_URL }}:${{ github.sha }}
       - name: Get Kubeconfig
         run: cat ~/.kube/config
       - name: Set Image Tag
@@ -31,13 +45,5 @@ jobs:
         run: grep -E "image" ./k8s/api.yml
       - name: Apply all yaml file
         run: cd k8s && kubectl apply -f .
-      - name: Prisma Port Forward
-        run: kubectl port-forward svc/prisma 4466:4466 --namespace api &
-      - name: Install Prisma and Deploy
-        run: |
-          mkdir ./.npm-global
-          npm config set prefix './.npm-global'
-          npm install -g prisma
-          ./.npm-global/bin/prisma deploy
       - name: Check result
         run: kubectl get all --all-namespaces
