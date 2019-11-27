@@ -4,7 +4,7 @@
     "description": "",
     "main": "index.js",
     "scripts": {
-        "start": "./node_modules/babel-cli/bin/babel-node.js src/index.js",
+        "start": "babel-node.js src/index.js",
         "dev": "nodemon src/index.js --ignore './postgres-data' --ext js,graphql --exec babel-node",
         "test": "echo \"Error: no test specified\" && exit 1"
     },
