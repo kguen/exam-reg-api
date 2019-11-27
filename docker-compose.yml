@@ -1,64 +1,67 @@
 version: '3.7'
 services:
-  prisma:
-    image: prismagraphql/prisma:1.34
-    container_name: prisma
-    depends_on:
-      - db
-    command: ["./scripts/wait-for-it.sh", "db:5432"]
-    restart: always
-    ports:
-    - "4466:4466"
-    environment:
-      PRISMA_CONFIG: |
-        port: 4466
-        # uncomment the next line and provide the env var PRISMA_MANAGEMENT_API_SECRET=my-secret to activate cluster security
-        # managementApiSecret: my-secret
-        databases:
-          default:
-            connector: postgres
-            host: db
-            database: exam-reg
-            user: examreg
-            password: prisma
-            rawAccess: true
-            port: '5432'
-            migrations: true
-    networks:
-      global:
-  db:
-    image: postgres:latest
-    container_name: postgres
-    restart: always
-    ports:
-      - "5432:5432"
-    networks:
-      global:
-    environment:
-      POSTGRES_USER: examreg
-      POSTGRES_PASSWORD: prisma
-      POSTGRES_DB: exam-reg
-    volumes:
-      - type: bind
-        source: ./postgres-data
-        target: /var/lib/postgresql/data
-  api:
-    build:
-      context: .
-      dockerfile: Dockerfile
-      target: dev
-    container_name: api
-    depends_on:
-      - db
-    restart: always
-    environment:
-      PRISMA_ENDPOINT: http://prisma:4466/exam
-    command: ["./scripts/wait-for-it.sh", "db:5432","--","npm","run","dev"]
-    volumes:
-      - .:/usr/src/app
-    ports:
-    - "4000:4000"
-    networks:
-      global:
+    prisma:
+        image: prismagraphql/prisma:1.34
+        container_name: prisma
+        depends_on:
+            - db
+        command: ['./scripts/wait-for-it.sh', 'db:5432']
+        restart: always
+        ports:
+            - '4466:4466'
+        environment:
+            PRISMA_CONFIG: |
+                port: 4466
+                # uncomment the next line and provide the env var PRISMA_MANAGEMENT_API_SECRET=my-secret to activate cluster security
+                # managementApiSecret: my-secret
+                databases:
+                  default:
+                    connector: postgres
+                    host: db
+                    database: exam-reg
+                    user: examreg
+                    password: prisma
+                    rawAccess: true
+                    port: '5432'
+                    migrations: true
+        networks:
+            global:
+    db:
+        image: postgres:latest
+        container_name: postgres
+        restart: always
+        ports:
+            - '5432:5432'
+        networks:
+            global:
+        environment:
+            POSTGRES_USER: examreg
+            POSTGRES_PASSWORD: prisma
+            POSTGRES_DB: exam-reg
+        volumes:
+            - type: bind
+              source: ./postgres-data
+              target: /var/lib/postgresql/data
+    api:
+        build:
+            context: .
+            dockerfile: Dockerfile
+            target: dev
+        container_name: api
+        depends_on:
+            - db
+        restart: always
+        environment:
+            PRISMA_ENDPOINT: http://prisma:4466/exam
+        command:
+            ['./scripts/wait-for-it.sh', 'db:5432', '--', 'npm', 'run', 'dev']
+        volumes:
+            - type: bind
+              source: .
+              target: /usr/src/app
+        ports:
+            - '4000:4000'
+        networks:
+            global:
 networks:
-  global:
+    global:

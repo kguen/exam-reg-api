@@ -1,2 +1,5 @@
 endpoint: http://localhost:4466/exam/default
 datamodel: datamodel.graphql
+hooks:
+ post-deploy:
+    - graphql get-schema -p prisma

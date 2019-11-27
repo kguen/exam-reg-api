@@ -1,41 +1,62 @@
+enum Permission {
+    ADMIN
+    USER
+}
+
+type User {
+    id: ID! @id
+    email: String! @unique
+    name: String!
+    normalizeName: String
+    password: String!
+    student: Student
+        @relation(name: "UserOnStudent", link: INLINE, onDelete: CASCADE)
+    admin: Admin @relation(name: "UserOnAdmin", link: INLINE, onDelete: CASCADE)
+    userType: Permission! @default(value: USER)
+}
+
+type Admin {
+    id: ID! @id
+    userInfo: User! @relation(name: "UserOnAdmin", onDelete: CASCADE)
+}
+
 type Student {
-  id: ID!@id
-  studentID: String!@unique
-  name: String!
-  normalizeName: String
-  courses: [Course!]! @relation(name: "CourseToStudent", onDelete: SET_NULL)
+    id: ID! @id
+    studentID: String! @unique
+    userInfo: User! @relation(name: "UserOnStudent", onDelete: CASCADE)
+    courses: [Course!]! @relation(name: "CourseToStudent", onDelete: SET_NULL)
 }
 
 type Course {
-  id: ID!@id
-  courseID: String!@unique
-  name: String!
-  normalizeName: String
-  sessions: [Session!]! @relation(name: "SessionToCourse", onDelete: CASCADE)
-  students: [Student!]! @relation(name: "CourseToStudent", onDelete: SET_NULL)
+    id: ID! @id
+    courseID: String! @unique
+    name: String!
+    normalizeName: String
+    sessions: [Session!]! @relation(name: "SessionToCourse", onDelete: CASCADE)
+    students: [Student!]! @relation(name: "CourseToStudent", onDelete: SET_NULL)
 }
 
 type Shift {
-  id: ID!@id
-  date: String!
-  startTime: String!
-  endTime: String!
-  sessions: [Session!]! @relation(name: "SessionToShift", onDelete: "CASCADE")
+    id: ID! @id
+    date: String!
+    startTime: String!
+    endTime: String!
+    sessions: [Session!]! @relation(name: "SessionToShift", onDelete: "CASCADE")
 }
 
 type Room {
-  id: ID!@id
-  roomID: String!@unique
-  totalPC: Int!
-  sessions: [Session!]! @relation(name: "SessionToRoom", onDelete: "CASCADE")
+    id: ID! @id
+    roomID: String! @unique
+    totalPC: Int!
+    sessions: [Session!]! @relation(name: "SessionToRoom", onDelete: "CASCADE")
 }
 
 type Session {
-  id: ID!@id
-  createdAt: DateTime! @createdAt
-  updatedAt: DateTime! @updatedAt
-  students: [Student!]!
-  course: Course! @relation(name: "SessionToCourse", onDelete: SET_NULL)
-  shift: Shift! @relation(name: "SessionToShift", onDelete: SET_NULL)
-  room: Room! @relation(name: "SessionToRoom", onDelete: SET_NULL)
+    id: ID! @id
+    createdAt: DateTime! @createdAt
+    updatedAt: DateTime! @updatedAt
+    students: [Student!]!
+    course: Course! @relation(name: "SessionToCourse", onDelete: SET_NULL)
+    shift: Shift! @relation(name: "SessionToShift", onDelete: SET_NULL)
+    room: Room! @relation(name: "SessionToRoom", onDelete: SET_NULL)
 }

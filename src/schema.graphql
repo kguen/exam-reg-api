@@ -1,141 +1,174 @@
+# import * from './generated/prisma.graphql'
+directive @authenticated on FIELD_DEFINITION
+directive @authorized(role: Permission!) on FIELD_DEFINITION
+
 type Query {
-  students(query: String): [Student!]!
-  courses(query: String): [Course!]! 
-  sessions(query: SessionQueryInput): [Session!]!
-  shifts: [Shift!]!
-  rooms: [Room!]!
+    me: User
+    students(query: String): [Student!]!
+    courses(query: String): [Course!]!
+    sessions(query: SessionQueryInput): [Session!]!
+    shifts: [Shift!]!
+    rooms: [Room!]!
 }
 
 type Mutation {
-  createStudent(data: StudentCreateInput!): Student!
-  createCourse(data: CourseCreateInput!): Course!
-  createSession(data: SessionCreateInput!): Session!
-  createRoom(data: RoomCreateInput!): Room!
-  createShift(data: ShiftCreateInput!): Shift!
-  deleteStudent(studentID: String!): Student!
-  deleteCourse(courseID: String!): Course!
-  deleteSession(id: ID!): Session!
-  deleteShift(id: ID!): Shift!
-  deleteRoom(roomID: String!): Room!
-  updateStudent(studentID: String!, data: StudentUpdateInput!): Student!
-  updateCourse(courseID: String!, data: CourseUpdateInput!): Course!
-  updateSession(id: ID!, data: SessionUpdateInput!): Session!
-  updateShift(id: ID!, data: ShiftUpdateInput!): Shift!
-  updateRoom(roomID: String!, data: RoomUpdateInput!): Room!
+    signIn(data: UserSignInInput!): User!
+    createStudent(data: StudentCreateInput!): Student!
+    createCourse(data: CourseCreateInput!): Course!
+    createSession(data: SessionCreateInput!): Session!
+    createRoom(data: RoomCreateInput!): Room!
+    createShift(data: ShiftCreateInput!): Shift!
+    deleteStudent(studentID: String!): Student!
+    deleteCourse(courseID: String!): Course!
+    deleteSession(id: ID!): Session!
+    deleteShift(id: ID!): Shift!
+    deleteRoom(roomID: String!): Room!
+    updateStudent(studentID: String!, data: StudentUpdateInput!): Student!
+    updateCourse(courseID: String!, data: CourseUpdateInput!): Course!
+    updateSession(id: ID!, data: SessionUpdateInput!): Session!
+    updateShift(id: ID!, data: ShiftUpdateInput!): Shift!
+    updateRoom(roomID: String!, data: RoomUpdateInput!): Room!
+}
+
+input UserSignInInput {
+    email: String!
+    password: String!
+}
+
+input UserInfoCreateInput {
+    name: String!
+    email: String!
+    password: String!
+}
+
+input UserInfoUpdateInput {
+    name: String
+    email: String
+    password: String
 }
 
 input StudentCreateInput {
-  studentID: String!
-  name: String!
-  courseIDs: [String!]
+    studentID: String!
+    userInfo: UserInfoCreateInput!
+    courseIDs: [String!]
 }
 
 input StudentUpdateInput {
-  studentID: String
-  name: String
-  courseIDs: ArrayUpdateInput
+    studentID: String
+    userInfo: UserInfoUpdateInput
+    courseIDs: ArrayUpdateInput
 }
 
 input CourseCreateInput {
-  courseID: String!
-  name: String!
-  studentIDs: [String!]
+    courseID: String!
+    name: String!
+    studentIDs: [String!]
 }
 
 input CourseUpdateInput {
-  courseID: String
-  name: String
-  studentIDs: ArrayUpdateInput 
+    courseID: String
+    name: String
+    studentIDs: ArrayUpdateInput
 }
 
 input SessionCreateInput {
-  courseID: String!
-  shiftID: String! 
-  roomID: String!
-  studentIDs: [String!]!
+    courseID: String!
+    shiftID: String!
+    roomID: String!
+    studentIDs: [String!]!
 }
 
 input SessionUpdateInput {
-  courseID: String
-  shiftID: ID
-  roomID: String
-  studentIDs: ArrayUpdateInput
+    name: String
+    courseID: String
+    shiftID: ID
+    roomID: String
+    studentIDs: ArrayUpdateInput
 }
 
 input SessionQueryInput {
-  shift: ShiftQueryInput
-  courseID: String
-  roomID: String
-  studentID: String
+    shift: ShiftQueryInput
+    courseID: String
+    roomID: String
+    studentID: String
 }
 
 input ShiftCreateInput {
-  date: String!
-  startTime: String!
-  endTime: String!
+    date: String!
+    startTime: String!
+    endTime: String!
 }
 
 input ShiftQueryInput {
-  date: String
-  startTime: String
-  endTime: String
+    date: String
+    startTime: String
+    endTime: String
 }
 
 input ShiftUpdateInput {
-  date: String
-  startTime: String
-  endTime: String
+    date: String
+    startTime: String
+    endTime: String
 }
 
 input RoomCreateInput {
-  roomID: String!
-  totalPC: Int!
+    roomID: String!
+    totalPC: Int!
 }
 
 input RoomUpdateInput {
-  roomID: String
-  totalPC: Int
+    roomID: String
+    totalPC: Int
 }
 
 input ArrayUpdateInput {
-  connect: [String!]
-  disconnect: [String!]
+    connect: [String!]
+    disconnect: [String!]
 }
 
 type Student {
-  id: ID!
-  studentID: String
-  name: String!
-  courses: [Course!]!
+    id: ID!
+    studentID: String!
+    userInfo: User!
+    courses: [Course!]!
 }
 
 type Course {
-  id: ID!
-  courseID: String!
-  name: String!
-  sessions: [Session!]!
-  students: [Student!]!
+    id: ID!
+    courseID: String!
+    name: String!
+    sessions: [Session!]!
+    students: [Student!]!
 }
 
 type Shift {
-  id: ID!
-  date: String!
-  startTime: String!
-  endTime: String!
-  sessions: [Session!]!
+    id: ID!
+    date: String!
+    startTime: String!
+    endTime: String!
+    sessions: [Session!]!
 }
 
 type Room {
-  id: ID!
-  roomID: String!
-  totalPC: Int!
-  sessions: [Session!]!
+    id: ID!
+    roomID: String!
+    totalPC: Int!
+    sessions: [Session!]!
 }
 
 type Session {
-  id: ID!
-  students: [Student!]!
-  course: Course!
-  shift: Shift!
-  room: Room!
+    id: ID!
+    students: [Student!]!
+    course: Course!
+    shift: Shift!
+    room: Room!
+}
+
+# TODO add student field
+type User {
+    id: ID!
+    name: String!
+    email: String!
+    userType: Permission
+    token: String
 }

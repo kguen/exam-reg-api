@@ -4,7 +4,7 @@ ENV NODE_ENV production
 EXPOSE 4000
 WORKDIR /usr/src/app
 COPY ["package.json", "package-lock.json*", "npm-shrinkwrap.json*", "./"]
-RUN npm install  --dev --silent && npm cache clean --force
+RUN npm install --only=dev && npm cache clean --force
 
 FROM base as dev
 ENV NODE_ENV development
