@@ -21,9 +21,7 @@ const server = new GraphQLServer({
 })
 
 server.express.use((req, res, next) => {
-    const token =
-        (req.cookies && req.cookies.token) ||
-        (req.headers.authorization && req.headers.authorization.replace('Bearer', ''))
+    const token = req?.cookies?.token || req.headers?.authorization?.replace('Bearer', '')
 
     if (token) {
         const {userID} = jwt.verify(token, process.env.APP_SECRET)

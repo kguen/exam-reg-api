@@ -1,8 +1,8 @@
-import { Prisma } from 'prisma-binding';
+import {Prisma} from 'prisma-binding'
 
 const prisma = new Prisma({
     typeDefs: 'src/generated/prisma.graphql',
-    endpoint: process.env.PRISMA_ENDPOINT
-});
+    endpoint: process.env.PRISMA_ENDPOINT || 'http://localhost:4466/exam',
+})
 
-export { prisma as default };
+export {prisma as default}

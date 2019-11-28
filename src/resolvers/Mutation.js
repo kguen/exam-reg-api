@@ -1,10 +1,9 @@
 import jwt from 'jsonwebtoken'
 import bcrypt from 'bcryptjs'
-import { removeAccent, validateTime, formatDate, validateDate} from '../utils'
+import {removeAccent, validateTime, formatDate, validateDate} from '../utils'
 
 const Mutation = {
     signIn: async (parent, {data}, {res, prisma}, info) => {
-        // TODO using bcrypt
         const {email, password} = data
         const user = await prisma.query.user({where: {email}})
 
@@ -19,7 +18,9 @@ const Mutation = {
 
         const token = jwt.sign({userID: user.id}, process.env.APP_SECRET)
 
-        user.token = token
+        if (process.env.NODE_ENV === 'development') {
+            user.token = token
+        }
 
         res.cookie('token', token, {
             httpOnly: true,

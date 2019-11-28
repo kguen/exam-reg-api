@@ -4,30 +4,35 @@ directive @authorized(role: Permission!) on FIELD_DEFINITION
 
 type Query {
     me: User
-    students(query: String): [Student!]!
-    courses(query: String): [Course!]!
-    sessions(query: SessionQueryInput): [Session!]!
-    shifts: [Shift!]!
-    rooms: [Room!]!
+    students(query: String): [Student!]! @authenticated
+    courses(query: String): [Course!]! @authenticated
+    sessions(query: SessionQueryInput): [Session!]! @authenticated
+    shifts: [Shift!]! @authenticated
+    rooms: [Room!]! @authenticated
 }
 
 type Mutation {
     signIn(data: UserSignInInput!): User!
-    createStudent(data: StudentCreateInput!): Student!
-    createCourse(data: CourseCreateInput!): Course!
-    createSession(data: SessionCreateInput!): Session!
-    createRoom(data: RoomCreateInput!): Room!
-    createShift(data: ShiftCreateInput!): Shift!
-    deleteStudent(studentID: String!): Student!
-    deleteCourse(courseID: String!): Course!
-    deleteSession(id: ID!): Session!
-    deleteShift(id: ID!): Shift!
-    deleteRoom(roomID: String!): Room!
+    createStudent(data: StudentCreateInput!): Student! @authorized(role: ADMIN)
+    createCourse(data: CourseCreateInput!): Course! @authorized(role: ADMIN)
+    createSession(data: SessionCreateInput!): Session! @authorized(role: ADMIN)
+    createRoom(data: RoomCreateInput!): Room! @authorized(role: ADMIN)
+    createShift(data: ShiftCreateInput!): Shift! @authorized(role: ADMIN)
+    deleteStudent(studentID: String!): Student! @authorized(role: ADMIN)
+    deleteCourse(courseID: String!): Course! @authorized(role: ADMIN)
+    deleteSession(id: ID!): Session! @authorized(role: ADMIN)
+    deleteShift(id: ID!): Shift! @authorized(role: ADMIN)
+    deleteRoom(roomID: String!): Room! @authorized(role: ADMIN)
     updateStudent(studentID: String!, data: StudentUpdateInput!): Student!
+        @authenticated
     updateCourse(courseID: String!, data: CourseUpdateInput!): Course!
+        @authorized(role: ADMIN)
     updateSession(id: ID!, data: SessionUpdateInput!): Session!
+        @authorized(role: ADMIN)
     updateShift(id: ID!, data: ShiftUpdateInput!): Shift!
+        @authorized(role: ADMIN)
     updateRoom(roomID: String!, data: RoomUpdateInput!): Room!
+        @authorized(role: ADMIN)
 }
 
 input UserSignInInput {
@@ -164,11 +169,12 @@ type Session {
     room: Room!
 }
 
-# TODO add student field
 type User {
     id: ID!
     name: String!
     email: String!
-    userType: Permission
+    userType: Permission!
+    student: Student
+    admin: Admin
     token: String
 }

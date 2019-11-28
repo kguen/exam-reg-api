@@ -9,8 +9,8 @@ class AuthenticationDirective extends SchemaDirectiveVisitor {
         const resolver = field.resolve || defaultFieldResolver
 
         field.resolve = async (root, args, ctx, info) => {
-            if (!ctx.user) {
-                throw new AuthenticationError('You must be logged in')
+            if (!ctx?.user) {
+                throw new AuthenticationError('You must be logged in to access this resource!')
             }
             return resolver(root, args, ctx, info)
         }
@@ -22,8 +22,8 @@ class AuthorizationDirective extends SchemaDirectiveVisitor {
         const resolver = field.resolve || defaultFieldResolver
         const {role} = this.args
         field.resolve = async (root, args, ctx, info) => {
-            if (ctx.user.userType !== role) {
-                throw new AuthenticationError("You don't have permission to access this resource")
+            if (ctx?.user?.userType !== role) {
+                throw new AuthenticationError(`You don't have permission to access this resource, required: ${role}!`)
             }
             return resolver(root, args, ctx, info)
         }
