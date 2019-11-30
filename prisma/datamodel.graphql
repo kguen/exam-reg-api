@@ -9,9 +9,6 @@ type User {
     name: String!
     normalizeName: String
     password: String!
-    student: Student
-        @relation(name: "UserOnStudent", link: INLINE, onDelete: CASCADE)
-    admin: Admin @relation(name: "UserOnAdmin", link: INLINE, onDelete: CASCADE)
     userType: Permission! @default(value: USER)
 }
 

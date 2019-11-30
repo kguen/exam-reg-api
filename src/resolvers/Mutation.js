@@ -6,29 +6,21 @@ const Mutation = {
     signIn: async (parent, {data}, {res, prisma}, info) => {
         const {email, password} = data
         const user = await prisma.query.user({where: {email}})
-
         if (!user) {
-            throw new Error(`No such user found for email ${email}`)
+            throw new Error(`No such user found for email ${email} found!`)
         }
 
         const isValidPassword = await bcrypt.compare(password, user.password)
         if (!isValidPassword) {
-            throw new Error('Invalid Password!')
+            throw new Error('Invalid password!')
         }
 
         const token = jwt.sign({userID: user.id}, process.env.APP_SECRET)
-
-        if (process.env.NODE_ENV === 'development') {
-            user.token = token
-        }
-
         res.cookie('token', token, {
             httpOnly: true,
             maxAge: 1000 * 60 * 60 * 24 * 365,
         })
-
-        // console.log(user)
-        return user
+        return {user, token}
     },
     createStudent: async (parent, {data}, {prisma}, info) => {
         const {password, email, name} = data.userInfo
@@ -46,7 +38,7 @@ const Mutation = {
             name,
             password: hashed,
             normalizeName: removeAccent(name.toLowerCase()),
-            email,
+            email
         }
 
         if (data.courseIDs) {
@@ -59,7 +51,7 @@ const Mutation = {
 
     createCourse: async (parent, {data}, {prisma}, info) => {
         const opArgs = {
-            courseID: data.courseID,
+            courseID: data.courseID.toUpperCase(),
             name: data.name,
             normalizeName: removeAccent(data.name.toLowerCase()),
             students: {
@@ -77,6 +69,7 @@ const Mutation = {
     createShift: async (parent, {data}, {prisma}, info) => {
         validateTime(data.startTime, data.endTime)
         validateDate(data.date)
+        
         if (data.startTime > data.endTime) {
             throw new Error('Shift starting time cannot be greater than shift end time!')
         }

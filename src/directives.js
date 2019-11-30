@@ -22,7 +22,7 @@ class AuthorizationDirective extends SchemaDirectiveVisitor {
         const resolver = field.resolve || defaultFieldResolver
         const {role} = this.args
         field.resolve = async (root, args, ctx, info) => {
-            if (ctx?.user?.userType !== role) {
+            if (ctx?.user?.userInfo?.userType !== role) {
                 throw new AuthenticationError(`You don't have permission to access this resource, required: ${role}!`)
             }
             return resolver(root, args, ctx, info)

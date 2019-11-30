@@ -1,20 +1,27 @@
 import {removeAccent} from '../utils'
 
 const Query = {
-    me(parent, args, {req, user, prisma}, info) {
-        // TODO change this
+    me: async (parent, args, {req, user, prisma}, info) => {
         if (!user) {
             return null
         }
-        return user
+        const students = await prisma.query.students({
+            where: {
+                userInfo: {id: req.userID}
+            }
+        }, info);
+        return students[0];
     },
     students(parent, {query}, {prisma}, info) {
-        // TODO query by name
         const opArgs = {}
         if (query) {
             opArgs.where = {
-                // OR: [{studentID_contains: query}, {name_contains: query.toLowerCase()}],
-                studentID_contains: query,
+                OR: [
+                    {studentID_contains: removeAccent(query.toLowerCase())}, 
+                    {
+                        userInfo: {normalizeName_contains: removeAccent(query.toLowerCase())}
+                    }
+                ]
             }
         }
         return prisma.query.students(opArgs, info)

@@ -1,5 +1,5 @@
 # source: http://localhost:4466/exam
-# timestamp: Wed Nov 27 2019 17:31:41 GMT+0700 (Indochina Time)
+# timestamp: Sat Nov 30 2019 16:18:50 GMT+0700 (Indochina Time)
 
 type Admin implements Node {
   id: ID!
@@ -18,16 +18,7 @@ type AdminConnection {
 
 input AdminCreateInput {
   id: ID
-  userInfo: UserCreateOneWithoutAdminInput!
-}
-
-input AdminCreateOneWithoutUserInfoInput {
-  create: AdminCreateWithoutUserInfoInput
-  connect: AdminWhereUniqueInput
-}
-
-input AdminCreateWithoutUserInfoInput {
-  id: ID
+  userInfo: UserCreateOneInput!
 }
 
 """An edge in a connection."""
@@ -86,14 +77,7 @@ input AdminSubscriptionWhereInput {
 }
 
 input AdminUpdateInput {
-  userInfo: UserUpdateOneRequiredWithoutAdminInput
-}
-
-input AdminUpdateOneWithoutUserInfoInput {
-  create: AdminCreateWithoutUserInfoInput
-  connect: AdminWhereUniqueInput
-  disconnect: Boolean
-  delete: Boolean
+  userInfo: UserUpdateOneRequiredInput
 }
 
 input AdminWhereInput {
@@ -742,45 +726,45 @@ Long can represent values between -(2^63) and 2^63 - 1.
 scalar Long
 
 type Mutation {
-  createUser(data: UserCreateInput!): User!
   createAdmin(data: AdminCreateInput!): Admin!
   createCourse(data: CourseCreateInput!): Course!
   createShift(data: ShiftCreateInput!): Shift!
   createRoom(data: RoomCreateInput!): Room!
   createSession(data: SessionCreateInput!): Session!
+  createUser(data: UserCreateInput!): User!
   createStudent(data: StudentCreateInput!): Student!
-  updateUser(data: UserUpdateInput!, where: UserWhereUniqueInput!): User
   updateAdmin(data: AdminUpdateInput!, where: AdminWhereUniqueInput!): Admin
   updateCourse(data: CourseUpdateInput!, where: CourseWhereUniqueInput!): Course
   updateShift(data: ShiftUpdateInput!, where: ShiftWhereUniqueInput!): Shift
   updateRoom(data: RoomUpdateInput!, where: RoomWhereUniqueInput!): Room
   updateSession(data: SessionUpdateInput!, where: SessionWhereUniqueInput!): Session
+  updateUser(data: UserUpdateInput!, where: UserWhereUniqueInput!): User
   updateStudent(data: StudentUpdateInput!, where: StudentWhereUniqueInput!): Student
-  deleteUser(where: UserWhereUniqueInput!): User
   deleteAdmin(where: AdminWhereUniqueInput!): Admin
   deleteCourse(where: CourseWhereUniqueInput!): Course
   deleteShift(where: ShiftWhereUniqueInput!): Shift
   deleteRoom(where: RoomWhereUniqueInput!): Room
   deleteSession(where: SessionWhereUniqueInput!): Session
+  deleteUser(where: UserWhereUniqueInput!): User
   deleteStudent(where: StudentWhereUniqueInput!): Student
-  upsertUser(where: UserWhereUniqueInput!, create: UserCreateInput!, update: UserUpdateInput!): User!
   upsertAdmin(where: AdminWhereUniqueInput!, create: AdminCreateInput!, update: AdminUpdateInput!): Admin!
   upsertCourse(where: CourseWhereUniqueInput!, create: CourseCreateInput!, update: CourseUpdateInput!): Course!
   upsertShift(where: ShiftWhereUniqueInput!, create: ShiftCreateInput!, update: ShiftUpdateInput!): Shift!
   upsertRoom(where: RoomWhereUniqueInput!, create: RoomCreateInput!, update: RoomUpdateInput!): Room!
   upsertSession(where: SessionWhereUniqueInput!, create: SessionCreateInput!, update: SessionUpdateInput!): Session!
+  upsertUser(where: UserWhereUniqueInput!, create: UserCreateInput!, update: UserUpdateInput!): User!
   upsertStudent(where: StudentWhereUniqueInput!, create: StudentCreateInput!, update: StudentUpdateInput!): Student!
-  updateManyUsers(data: UserUpdateManyMutationInput!, where: UserWhereInput): BatchPayload!
   updateManyCourses(data: CourseUpdateManyMutationInput!, where: CourseWhereInput): BatchPayload!
   updateManyShifts(data: ShiftUpdateManyMutationInput!, where: ShiftWhereInput): BatchPayload!
   updateManyRooms(data: RoomUpdateManyMutationInput!, where: RoomWhereInput): BatchPayload!
+  updateManyUsers(data: UserUpdateManyMutationInput!, where: UserWhereInput): BatchPayload!
   updateManyStudents(data: StudentUpdateManyMutationInput!, where: StudentWhereInput): BatchPayload!
-  deleteManyUsers(where: UserWhereInput): BatchPayload!
   deleteManyAdmins(where: AdminWhereInput): BatchPayload!
   deleteManyCourses(where: CourseWhereInput): BatchPayload!
   deleteManyShifts(where: ShiftWhereInput): BatchPayload!
   deleteManyRooms(where: RoomWhereInput): BatchPayload!
   deleteManySessions(where: SessionWhereInput): BatchPayload!
+  deleteManyUsers(where: UserWhereInput): BatchPayload!
   deleteManyStudents(where: StudentWhereInput): BatchPayload!
   executeRaw(database: PrismaDatabase, query: String!): Json!
 }
@@ -822,26 +806,26 @@ enum PrismaDatabase {
 }
 
 type Query {
-  users(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [User]!
   admins(where: AdminWhereInput, orderBy: AdminOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Admin]!
   courses(where: CourseWhereInput, orderBy: CourseOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Course]!
   shifts(where: ShiftWhereInput, orderBy: ShiftOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Shift]!
   rooms(where: RoomWhereInput, orderBy: RoomOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Room]!
   sessions(where: SessionWhereInput, orderBy: SessionOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Session]!
+  users(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [User]!
   students(where: StudentWhereInput, orderBy: StudentOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Student]!
-  user(where: UserWhereUniqueInput!): User
   admin(where: AdminWhereUniqueInput!): Admin
   course(where: CourseWhereUniqueInput!): Course
   shift(where: ShiftWhereUniqueInput!): Shift
   room(where: RoomWhereUniqueInput!): Room
   session(where: SessionWhereUniqueInput!): Session
+  user(where: UserWhereUniqueInput!): User
   student(where: StudentWhereUniqueInput!): Student
-  usersConnection(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): UserConnection!
   adminsConnection(where: AdminWhereInput, orderBy: AdminOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): AdminConnection!
   coursesConnection(where: CourseWhereInput, orderBy: CourseOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): CourseConnection!
   shiftsConnection(where: ShiftWhereInput, orderBy: ShiftOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): ShiftConnection!
   roomsConnection(where: RoomWhereInput, orderBy: RoomOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): RoomConnection!
   sessionsConnection(where: SessionWhereInput, orderBy: SessionOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): SessionConnection!
+  usersConnection(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): UserConnection!
   studentsConnection(where: StudentWhereInput, orderBy: StudentOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): StudentConnection!
 
   """Fetches an object given its ID"""
@@ -1843,7 +1827,7 @@ type StudentConnection {
 input StudentCreateInput {
   id: ID
   studentID: String!
-  userInfo: UserCreateOneWithoutStudentInput!
+  userInfo: UserCreateOneInput!
   courses: CourseCreateManyWithoutStudentsInput
 }
 
@@ -1857,21 +1841,10 @@ input StudentCreateManyWithoutCoursesInput {
   connect: [StudentWhereUniqueInput!]
 }
 
-input StudentCreateOneWithoutUserInfoInput {
-  create: StudentCreateWithoutUserInfoInput
-  connect: StudentWhereUniqueInput
-}
-
 input StudentCreateWithoutCoursesInput {
   id: ID
   studentID: String!
-  userInfo: UserCreateOneWithoutStudentInput!
-}
-
-input StudentCreateWithoutUserInfoInput {
-  id: ID
-  studentID: String!
-  courses: CourseCreateManyWithoutStudentsInput
+  userInfo: UserCreateOneInput!
 }
 
 """An edge in a connection."""
@@ -2025,13 +1998,13 @@ input StudentSubscriptionWhereInput {
 
 input StudentUpdateDataInput {
   studentID: String
-  userInfo: UserUpdateOneRequiredWithoutStudentInput
+  userInfo: UserUpdateOneRequiredInput
   courses: CourseUpdateManyWithoutStudentsInput
 }
 
 input StudentUpdateInput {
   studentID: String
-  userInfo: UserUpdateOneRequiredWithoutStudentInput
+  userInfo: UserUpdateOneRequiredInput
   courses: CourseUpdateManyWithoutStudentsInput
 }
 
@@ -2072,23 +2045,9 @@ input StudentUpdateManyWithWhereNestedInput {
   data: StudentUpdateManyDataInput!
 }
 
-input StudentUpdateOneWithoutUserInfoInput {
-  create: StudentCreateWithoutUserInfoInput
-  connect: StudentWhereUniqueInput
-  disconnect: Boolean
-  delete: Boolean
-  update: StudentUpdateWithoutUserInfoDataInput
-  upsert: StudentUpsertWithoutUserInfoInput
-}
-
 input StudentUpdateWithoutCoursesDataInput {
   studentID: String
-  userInfo: UserUpdateOneRequiredWithoutStudentInput
-}
-
-input StudentUpdateWithoutUserInfoDataInput {
-  studentID: String
-  courses: CourseUpdateManyWithoutStudentsInput
+  userInfo: UserUpdateOneRequiredInput
 }
 
 input StudentUpdateWithWhereUniqueNestedInput {
@@ -2099,11 +2058,6 @@ input StudentUpdateWithWhereUniqueNestedInput {
 input StudentUpdateWithWhereUniqueWithoutCoursesInput {
   where: StudentWhereUniqueInput!
   data: StudentUpdateWithoutCoursesDataInput!
-}
-
-input StudentUpsertWithoutUserInfoInput {
-  update: StudentUpdateWithoutUserInfoDataInput!
-  create: StudentCreateWithoutUserInfoInput!
 }
 
 input StudentUpsertWithWhereUniqueNestedInput {
@@ -2219,12 +2173,12 @@ input StudentWhereUniqueInput {
 }
 
 type Subscription {
-  user(where: UserSubscriptionWhereInput): UserSubscriptionPayload
   admin(where: AdminSubscriptionWhereInput): AdminSubscriptionPayload
   course(where: CourseSubscriptionWhereInput): CourseSubscriptionPayload
   shift(where: ShiftSubscriptionWhereInput): ShiftSubscriptionPayload
   room(where: RoomSubscriptionWhereInput): RoomSubscriptionPayload
   session(where: SessionSubscriptionWhereInput): SessionSubscriptionPayload
+  user(where: UserSubscriptionWhereInput): UserSubscriptionPayload
   student(where: StudentSubscriptionWhereInput): StudentSubscriptionPayload
 }
 
@@ -2234,8 +2188,6 @@ type User implements Node {
   name: String!
   normalizeName: String
   password: String!
-  student: Student
-  admin: Admin
   userType: Permission!
 }
 
@@ -2256,38 +2208,11 @@ input UserCreateInput {
   normalizeName: String
   password: String!
   userType: Permission
-  student: StudentCreateOneWithoutUserInfoInput
-  admin: AdminCreateOneWithoutUserInfoInput
 }
 
-input UserCreateOneWithoutAdminInput {
-  create: UserCreateWithoutAdminInput
+input UserCreateOneInput {
+  create: UserCreateInput
   connect: UserWhereUniqueInput
-}
-
-input UserCreateOneWithoutStudentInput {
-  create: UserCreateWithoutStudentInput
-  connect: UserWhereUniqueInput
-}
-
-input UserCreateWithoutAdminInput {
-  id: ID
-  email: String!
-  name: String!
-  normalizeName: String
-  password: String!
-  userType: Permission
-  student: StudentCreateOneWithoutUserInfoInput
-}
-
-input UserCreateWithoutStudentInput {
-  id: ID
-  email: String!
-  name: String!
-  normalizeName: String
-  password: String!
-  userType: Permission
-  admin: AdminCreateOneWithoutUserInfoInput
 }
 
 """An edge in a connection."""
@@ -2360,14 +2285,20 @@ input UserSubscriptionWhereInput {
   node: UserWhereInput
 }
 
+input UserUpdateDataInput {
+  email: String
+  name: String
+  normalizeName: String
+  password: String
+  userType: Permission
+}
+
 input UserUpdateInput {
   email: String
   name: String
   normalizeName: String
   password: String
   userType: Permission
-  student: StudentUpdateOneWithoutUserInfoInput
-  admin: AdminUpdateOneWithoutUserInfoInput
 }
 
 input UserUpdateManyMutationInput {
@@ -2378,46 +2309,16 @@ input UserUpdateManyMutationInput {
   userType: Permission
 }
 
-input UserUpdateOneRequiredWithoutAdminInput {
-  create: UserCreateWithoutAdminInput
+input UserUpdateOneRequiredInput {
+  create: UserCreateInput
   connect: UserWhereUniqueInput
-  update: UserUpdateWithoutAdminDataInput
-  upsert: UserUpsertWithoutAdminInput
+  update: UserUpdateDataInput
+  upsert: UserUpsertNestedInput
 }
 
-input UserUpdateOneRequiredWithoutStudentInput {
-  create: UserCreateWithoutStudentInput
-  connect: UserWhereUniqueInput
-  update: UserUpdateWithoutStudentDataInput
-  upsert: UserUpsertWithoutStudentInput
-}
-
-input UserUpdateWithoutAdminDataInput {
-  email: String
-  name: String
-  normalizeName: String
-  password: String
-  userType: Permission
-  student: StudentUpdateOneWithoutUserInfoInput
-}
-
-input UserUpdateWithoutStudentDataInput {
-  email: String
-  name: String
-  normalizeName: String
-  password: String
-  userType: Permission
-  admin: AdminUpdateOneWithoutUserInfoInput
-}
-
-input UserUpsertWithoutAdminInput {
-  update: UserUpdateWithoutAdminDataInput!
-  create: UserCreateWithoutAdminInput!
-}
-
-input UserUpsertWithoutStudentInput {
-  update: UserUpdateWithoutStudentDataInput!
-  create: UserCreateWithoutStudentInput!
+input UserUpsertNestedInput {
+  update: UserUpdateDataInput!
+  create: UserCreateInput!
 }
 
 input UserWhereInput {
@@ -2639,8 +2540,6 @@ input UserWhereInput {
 
   """All values that are not contained in given list."""
   userType_not_in: [Permission!]
-  student: StudentWhereInput
-  admin: AdminWhereInput
 }
 
 input UserWhereUniqueInput {

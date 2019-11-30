@@ -3,7 +3,7 @@ directive @authenticated on FIELD_DEFINITION
 directive @authorized(role: Permission!) on FIELD_DEFINITION
 
 type Query {
-    me: User
+    me: Student
     students(query: String): [Student!]! @authenticated
     courses(query: String): [Course!]! @authenticated
     sessions(query: SessionQueryInput): [Session!]! @authenticated
@@ -12,7 +12,7 @@ type Query {
 }
 
 type Mutation {
-    signIn(data: UserSignInInput!): User!
+    signIn(data: UserSignInInput!): AuthPayload!
     createStudent(data: StudentCreateInput!): Student! @authorized(role: ADMIN)
     createCourse(data: CourseCreateInput!): Course! @authorized(role: ADMIN)
     createSession(data: SessionCreateInput!): Session! @authorized(role: ADMIN)
@@ -33,6 +33,11 @@ type Mutation {
         @authorized(role: ADMIN)
     updateRoom(roomID: String!, data: RoomUpdateInput!): Room!
         @authorized(role: ADMIN)
+}
+
+type AuthPayload {
+    user: User!
+    token: String!
 }
 
 input UserSignInInput {
@@ -135,7 +140,7 @@ type Student {
     id: ID!
     studentID: String!
     userInfo: User!
-    courses: [Course!]!
+    courses: [Course!]
 }
 
 type Course {
@@ -172,9 +177,6 @@ type Session {
 type User {
     id: ID!
     name: String!
-    email: String!
+    email: String
     userType: Permission!
-    student: Student
-    admin: Admin
-    token: String
 }

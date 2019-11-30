@@ -25,7 +25,7 @@ const removeAccent = str => {
 const validateTime = (...timeArr) => {
     timeArr.forEach(time => {
         if (!moment(time, hourFormat).isValid()) {
-            throw new Error(`Invalid time format: ${time}`)
+            throw new Error(`Invalid time format: ${time}!`)
         }
     })
 }
@@ -33,16 +33,15 @@ const validateTime = (...timeArr) => {
 const validateDate = (...dateArr) => {
     dateArr.forEach(date => {
         if (!moment(date, defaultDateFormat).isValid()) {
-            throw new Error(`Invalid date format: ${date}`)
+            throw new Error(`Invalid date format: ${date}!`)
         }
     })
 }
 
 const formatDate = (date, format = defaultDateFormat) => {
     if (!moment(date).isValid()) {
-        throw new Error('Invalid date')
+        throw new Error('Invalid date!')
     }
-
     return moment(date).format(format)
 }
 
