@@ -377,6 +377,21 @@ const Mutation = {
                 throw new Error('Another session already existed at your time and room of choice!')
             }
         }
+        for (const studentID of newSession.students) {
+            const studentSessionsOnShift = await prisma.query.sessions(
+                {
+                    where: {
+                        students_some: {studentID},
+                        shift: {id: newSession.shift.id},
+                    },
+                },
+                '{ id }'
+            )
+            console.log(studentSessionsOnShift);
+            if (studentSessionsOnShift.length) {
+                throw new Error(`Student ${studentID} has another exam session at your time of choice!`)
+            }
+        }
         return prisma.mutation.updateSession(
             {
                 where: {id: args.id},
@@ -384,6 +399,55 @@ const Mutation = {
             },
             info
         )
+    },
+
+    registerToSession: async (parent, args, {prisma}, info) => {
+        const session = await prisma.query.session(
+            {
+                where: {id: args.id},
+            },
+            '{ course { courseID } students { studentID } shift { id } room { roomID totalPC } }'
+        )
+        if (!session) {
+            throw new Error(`There's no session that exists with id ${args.id}!`)
+        }
+        if (session.students.some(item => args.studentID === item.studentID)) {
+            throw new Error(`Student ${args.studentID} already enrolled in this session!`)
+        }
+        const course = await prisma.query.course(
+            {
+                where: {courseID: session.course.courseID},
+            },
+            '{ students { studentID } }'
+        )
+        if (!course.students.some(item => args.studentID === item.studentID)) {
+            throw new Error(`Student ${args.studentID} did not enroll in course ${session.course.courseID}!`)
+        }
+        if (session.room.totalPC === session.students.length) {
+            throw new Error(
+                `Room ${session.room.roomID} cannot contain more than ${session.room.totalPC} students!`
+            )
+        }
+        const studentSessionsOnShift = await prisma.query.sessions(
+            {
+                where: {
+                    students_some: {studentID: args.studentID},
+                    shift: {id: session.shift.id},
+                },
+            },
+            '{ id }'
+        )
+        if (studentSessionsOnShift.length) {
+            throw new Error(`Student ${args.studentID} has another exam session at your time of choice!`)
+        }
+        return prisma.mutation.updateSession({
+            where: {id: args.id},
+            data: {
+                students: {
+                    connect: [{studentID: args.studentID}]
+                }
+            },
+        }, info)
     },
 
     updateShift: async (parent, args, {prisma}, info) => {

@@ -5,12 +5,20 @@ const Query = {
         if (!user) {
             return null
         }
-        const students = await prisma.query.students({
+        if (user.userType === 'USER') {
+            const students = await prisma.query.students({
+                where: {
+                    userInfo: {id: req.userID}
+                }
+            }, info);
+            return students[0];
+        }
+        const admins = await prisma.query.admins({
             where: {
                 userInfo: {id: req.userID}
             }
         }, info);
-        return students[0];
+        return admins[0];
     },
     students(parent, {query}, {prisma}, info) {
         const opArgs = {}

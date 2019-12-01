@@ -3,7 +3,7 @@ directive @authenticated on FIELD_DEFINITION
 directive @authorized(role: Permission!) on FIELD_DEFINITION
 
 type Query {
-    me: Student
+    me: UserPayload
     students(query: String): [Student!]! @authenticated
     courses(query: String): [Course!]! @authenticated
     sessions(query: SessionQueryInput): [Session!]! @authenticated
@@ -29,6 +29,8 @@ type Mutation {
         @authorized(role: ADMIN)
     updateSession(id: ID!, data: SessionUpdateInput!): Session!
         @authorized(role: ADMIN)
+    registerToSession(id: ID!, studentID: String!): Session!
+        @authenticated
     updateShift(id: ID!, data: ShiftUpdateInput!): Shift!
         @authorized(role: ADMIN)
     updateRoom(roomID: String!, data: RoomUpdateInput!): Room!
@@ -38,6 +40,13 @@ type Mutation {
 type AuthPayload {
     user: User!
     token: String!
+}
+
+type UserPayload {
+    id: ID
+    studentID: String
+    userInfo: User
+    courses: [Course!]
 }
 
 input UserSignInInput {
