@@ -143,15 +143,25 @@ const Mutation = {
                 {
                     where: {
                         students_some: {studentID},
-                        shift: data.shift,
+                        shift: {id: data.shiftID},
                     },
                 },
                 '{ id }'
+            )
+            const studentSessionsOnCourse = await prisma.query.sessions(
+                {
+                    where: {
+                        students_some: {studentID},
+                        course: {courseID: data.courseID}
+                    }
+                }
             )
             if (!studentsFromCourse.includes(studentID)) {
                 throw new Error(`Student ${studentID} did not enroll in course ${data.courseID}!`)
             } else if (studentSessionsOnShift.length) {
                 throw new Error(`Student ${studentID} has another exam session at your time of choice!`)
+            } else if (studentSessionsOnCourse.length) {
+                throw new Error(`Student ${studentID} already has another exam session for course ${data.courseID}!`)
             } else {
                 opArgs.data.students.connect.push({studentID})
             }
@@ -387,9 +397,21 @@ const Mutation = {
                 },
                 '{ id }'
             )
-            console.log(studentSessionsOnShift);
+            const studentSessionsOnCourse = await prisma.query.sessions(
+                {
+                    where: {
+                        students_some: {studentID},
+                        course: {courseID: newSession.course.courseID}
+                    }
+                }
+            )
             if (studentSessionsOnShift.length) {
                 throw new Error(`Student ${studentID} has another exam session at your time of choice!`)
+            }
+            if (studentSessionsOnCourse.length) {
+                throw new Error(
+                    `Student ${studentID} already has another exam session for course ${newSession.course.courseID}!`
+                )
             }
         }
         return prisma.mutation.updateSession(
@@ -437,8 +459,21 @@ const Mutation = {
             },
             '{ id }'
         )
+        const studentSessionsOnCourse = await prisma.query.sessions(
+            {
+                where: {
+                    students_some: {studentID: args.studentID},
+                    course: {courseID: session.course.courseID}
+                }
+            }
+        )
         if (studentSessionsOnShift.length) {
             throw new Error(`Student ${args.studentID} has another exam session at your time of choice!`)
+        }
+        if (studentSessionsOnCourse.length) {
+            throw new Error(
+                `Student ${args.studentID} already has another exam session for course ${session.course.courseID}!`
+            )
         }
         return prisma.mutation.updateSession({
             where: {id: args.id},

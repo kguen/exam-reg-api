@@ -21,7 +21,7 @@ type Student {
     id: ID! @id
     studentID: String! @unique
     userInfo: User! @relation(name: "UserOnStudent", onDelete: CASCADE)
-    courses: [Course!]! @relation(name: "CourseToStudent", onDelete: SET_NULL)
+    courses: [Course!]! @relation(name: "CourseOnStudent", onDelete: SET_NULL)
 }
 
 type Course {
@@ -29,8 +29,8 @@ type Course {
     courseID: String! @unique
     name: String!
     normalizeName: String
-    sessions: [Session!]! @relation(name: "SessionToCourse", onDelete: CASCADE)
-    students: [Student!]! @relation(name: "CourseToStudent", onDelete: SET_NULL)
+    sessions: [Session!]! @relation(name: "SessionOnCourse", onDelete: CASCADE)
+    students: [Student!]! @relation(name: "CourseOnStudent", onDelete: SET_NULL)
 }
 
 type Shift {
@@ -38,14 +38,14 @@ type Shift {
     date: String!
     startTime: String!
     endTime: String!
-    sessions: [Session!]! @relation(name: "SessionToShift", onDelete: "CASCADE")
+    sessions: [Session!]! @relation(name: "SessionOnShift", onDelete: "CASCADE")
 }
 
 type Room {
     id: ID! @id
     roomID: String! @unique
     totalPC: Int!
-    sessions: [Session!]! @relation(name: "SessionToRoom", onDelete: "CASCADE")
+    sessions: [Session!]! @relation(name: "SessionOnRoom", onDelete: "CASCADE")
 }
 
 type Session {
@@ -53,7 +53,7 @@ type Session {
     createdAt: DateTime! @createdAt
     updatedAt: DateTime! @updatedAt
     students: [Student!]!
-    course: Course! @relation(name: "SessionToCourse", onDelete: SET_NULL)
-    shift: Shift! @relation(name: "SessionToShift", onDelete: SET_NULL)
-    room: Room! @relation(name: "SessionToRoom", onDelete: SET_NULL)
+    course: Course! @relation(name: "SessionOnCourse", onDelete: SET_NULL)
+    shift: Shift! @relation(name: "SessionOnShift", onDelete: SET_NULL)
+    room: Room! @relation(name: "SessionOnRoom", onDelete: SET_NULL)
 }
