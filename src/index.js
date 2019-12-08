@@ -2,18 +2,17 @@ import {GraphQLServer} from 'graphql-yoga'
 import cookieParser from 'cookie-parser'
 import jwt from 'jsonwebtoken'
 import prisma from './prisma'
-import {resolvers} from './resolvers/index'
+import {resolvers, fragmentReplacements} from './resolvers/index'
 import {AuthenticationDirective, AuthorizationDirective} from './directives'
-import {fragmentReplacements} from './resolvers/index'
 
-require('dotenv').config()
+require('dotenv').config({path: '.env'})
 
 const server = new GraphQLServer({
     typeDefs: './src/schema.graphql',
     resolvers,
     resolverValidationOptions: {
-		requireResolversForResolveType: false,
-	},
+        requireResolversForResolveType: false,
+    },
     schemaDirectives: {
         authenticated: AuthenticationDirective,
         authorized: AuthorizationDirective,
@@ -21,7 +20,7 @@ const server = new GraphQLServer({
     context: ({request, response}) => {
         return {req: request, res: response, user: request.user, prisma}
     },
-    fragmentReplacements
+    fragmentReplacements,
 })
 
 server.express.use((req, res, next) => {
@@ -37,9 +36,12 @@ server.express.use(async (req, res, next) => {
     // if they aren't logged in, skip this
     if (!req.userID) return next()
 
-    const user = await prisma.query.user({
-        where: {id: req.userID},
-    } ,'{ id userType }')
+    const user = await prisma.query.user(
+        {
+            where: {id: req.userID},
+        },
+        '{ id userType }'
+    )
     req.user = user
     next()
 })
@@ -47,7 +49,7 @@ server.express.use(async (req, res, next) => {
 server.express.use(cookieParser())
 const opts = {
     port: 4000,
-    cors: 'http://localhost:3000/'
+    cors: 'http://localhost:3000/',
 }
 
 server.start(opts, () => {

@@ -69,7 +69,7 @@ const Mutation = {
     createShift: async (parent, {data}, {prisma}, info) => {
         validateTime(data.startTime, data.endTime)
         validateDate(data.date)
-        
+
         if (data.startTime > data.endTime) {
             throw new Error('Shift starting time cannot be greater than shift end time!')
         }

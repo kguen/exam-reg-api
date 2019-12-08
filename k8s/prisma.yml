@@ -36,29 +36,29 @@ spec:
     ports:
         - port: 4466
           targetPort: 4466
----
-apiVersion: extensions/v1beta1
-kind: Ingress
-metadata:
-    name: examreg-prisma-ingress
-    namespace: api
-    annotations:
-        kubernetes.io/ingress.class: nginx
-        cert-manager.io/cluster-issuer: letsencrypt-prod
-        nginx.ingress.kubernetes.io/rewrite-target: /$2
-        nginx.ingress.kubernetes.io/auth-type: basic
-        nginx.ingress.kubernetes.io/auth-secret: basic-auth
-        nginx.ingress.kubernetes.io/auth-realm: 'Authentication Required'
-spec:
-    tls:
-        - hosts:
-              - examreg.hughdo.dev
-          secretName: examreg-webapp-tls
-    rules:
-        - host: examreg.hughdo.dev
-          http:
-              paths:
-                  - path: /prisma(/|$)(.*)
-                    backend:
-                        serviceName: prisma
-                        servicePort: 4466
+# ---
+# apiVersion: extensions/v1beta1
+# kind: Ingress
+# metadata:
+#     name: examreg-prisma-ingress
+#     namespace: api
+#     annotations:
+#         kubernetes.io/ingress.class: nginx
+#         cert-manager.io/cluster-issuer: letsencrypt-prod
+#         nginx.ingress.kubernetes.io/rewrite-target: /$2
+#         nginx.ingress.kubernetes.io/auth-type: basic
+#         nginx.ingress.kubernetes.io/auth-secret: basic-auth
+#         nginx.ingress.kubernetes.io/auth-realm: 'Authentication Required'
+# spec:
+#     tls:
+#         - hosts:
+#               - examreg.hughdo.dev
+#           secretName: examreg-webapp-tls
+#     rules:
+#         - host: examreg.hughdo.dev
+#           http:
+#               paths:
+#                   - path: /prisma(/|$)(.*)
+#                     backend:
+#                         serviceName: prisma
+#                         servicePort: 4466
