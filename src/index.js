@@ -23,13 +23,19 @@ const server = new GraphQLServer({
     fragmentReplacements,
 })
 
+server.express.use(cookieParser())
+
 server.express.use((req, res, next) => {
-    const token = req?.cookies?.token || req.headers?.authorization?.replace('Bearer ', '')
-    if (token) {
-        const {userID} = jwt.verify(token, process.env.APP_SECRET)
-        req.userID = userID
+    try {
+        const token = req?.cookies?.token || req.headers?.authorization?.replace('Bearer ', '')
+        if (token) {
+            const {userID} = jwt.verify(token, process.env.APP_SECRET)
+            req.userID = userID
+        }
+        next()
+    } catch (error) {
+        console.log('Error: ', error.message)
     }
-    next()
 })
 
 server.express.use(async (req, res, next) => {
@@ -46,10 +52,12 @@ server.express.use(async (req, res, next) => {
     next()
 })
 
-server.express.use(cookieParser())
 const opts = {
     port: 4000,
-    cors: 'http://localhost:3000/',
+    cors: {
+        credentials: true,
+        origin: ['http://localhost:3000'], // frontend url.
+    },
 }
 
 server.start(opts, () => {
