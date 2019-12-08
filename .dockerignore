@@ -1,7 +1,6 @@
 **/postgres-data
 **/.classpath
 **/.dockerignore
-**/.env
 **/.git
 **/.gitignore
 **/.project
