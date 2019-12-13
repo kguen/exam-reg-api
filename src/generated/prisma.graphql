@@ -1,5 +1,5 @@
 # source: http://localhost:4466/exam
-# timestamp: Sat Nov 30 2019 16:18:50 GMT+0700 (Indochina Time)
+# timestamp: Fri Dec 13 2019 21:14:34 GMT+0700 (Indochina Time)
 
 type Admin implements Node {
   id: ID!
@@ -176,6 +176,7 @@ type Course implements Node {
   normalizeName: String
   sessions(where: SessionWhereInput, orderBy: SessionOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Session!]
   students(where: StudentWhereInput, orderBy: StudentOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Student!]
+  nonEligibleStudents(where: StudentWhereInput, orderBy: StudentOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Student!]
 }
 
 """A connection to a list of items."""
@@ -195,6 +196,12 @@ input CourseCreateInput {
   normalizeName: String
   sessions: SessionCreateManyWithoutCourseInput
   students: StudentCreateManyWithoutCoursesInput
+  nonEligibleStudents: StudentCreateManyWithoutNonEligibleCoursesInput
+}
+
+input CourseCreateManyWithoutNonEligibleStudentsInput {
+  create: [CourseCreateWithoutNonEligibleStudentsInput!]
+  connect: [CourseWhereUniqueInput!]
 }
 
 input CourseCreateManyWithoutStudentsInput {
@@ -207,12 +214,22 @@ input CourseCreateOneWithoutSessionsInput {
   connect: CourseWhereUniqueInput
 }
 
+input CourseCreateWithoutNonEligibleStudentsInput {
+  id: ID
+  courseID: String!
+  name: String!
+  normalizeName: String
+  sessions: SessionCreateManyWithoutCourseInput
+  students: StudentCreateManyWithoutCoursesInput
+}
+
 input CourseCreateWithoutSessionsInput {
   id: ID
   courseID: String!
   name: String!
   normalizeName: String
   students: StudentCreateManyWithoutCoursesInput
+  nonEligibleStudents: StudentCreateManyWithoutNonEligibleCoursesInput
 }
 
 input CourseCreateWithoutStudentsInput {
@@ -221,6 +238,7 @@ input CourseCreateWithoutStudentsInput {
   name: String!
   normalizeName: String
   sessions: SessionCreateManyWithoutCourseInput
+  nonEligibleStudents: StudentCreateManyWithoutNonEligibleCoursesInput
 }
 
 """An edge in a connection."""
@@ -464,6 +482,7 @@ input CourseUpdateInput {
   normalizeName: String
   sessions: SessionUpdateManyWithoutCourseInput
   students: StudentUpdateManyWithoutCoursesInput
+  nonEligibleStudents: StudentUpdateManyWithoutNonEligibleCoursesInput
 }
 
 input CourseUpdateManyDataInput {
@@ -476,6 +495,18 @@ input CourseUpdateManyMutationInput {
   courseID: String
   name: String
   normalizeName: String
+}
+
+input CourseUpdateManyWithoutNonEligibleStudentsInput {
+  create: [CourseCreateWithoutNonEligibleStudentsInput!]
+  connect: [CourseWhereUniqueInput!]
+  set: [CourseWhereUniqueInput!]
+  disconnect: [CourseWhereUniqueInput!]
+  delete: [CourseWhereUniqueInput!]
+  update: [CourseUpdateWithWhereUniqueWithoutNonEligibleStudentsInput!]
+  updateMany: [CourseUpdateManyWithWhereNestedInput!]
+  deleteMany: [CourseScalarWhereInput!]
+  upsert: [CourseUpsertWithWhereUniqueWithoutNonEligibleStudentsInput!]
 }
 
 input CourseUpdateManyWithoutStudentsInput {
@@ -502,11 +533,20 @@ input CourseUpdateOneRequiredWithoutSessionsInput {
   upsert: CourseUpsertWithoutSessionsInput
 }
 
+input CourseUpdateWithoutNonEligibleStudentsDataInput {
+  courseID: String
+  name: String
+  normalizeName: String
+  sessions: SessionUpdateManyWithoutCourseInput
+  students: StudentUpdateManyWithoutCoursesInput
+}
+
 input CourseUpdateWithoutSessionsDataInput {
   courseID: String
   name: String
   normalizeName: String
   students: StudentUpdateManyWithoutCoursesInput
+  nonEligibleStudents: StudentUpdateManyWithoutNonEligibleCoursesInput
 }
 
 input CourseUpdateWithoutStudentsDataInput {
@@ -514,6 +554,12 @@ input CourseUpdateWithoutStudentsDataInput {
   name: String
   normalizeName: String
   sessions: SessionUpdateManyWithoutCourseInput
+  nonEligibleStudents: StudentUpdateManyWithoutNonEligibleCoursesInput
+}
+
+input CourseUpdateWithWhereUniqueWithoutNonEligibleStudentsInput {
+  where: CourseWhereUniqueInput!
+  data: CourseUpdateWithoutNonEligibleStudentsDataInput!
 }
 
 input CourseUpdateWithWhereUniqueWithoutStudentsInput {
@@ -524,6 +570,12 @@ input CourseUpdateWithWhereUniqueWithoutStudentsInput {
 input CourseUpsertWithoutSessionsInput {
   update: CourseUpdateWithoutSessionsDataInput!
   create: CourseCreateWithoutSessionsInput!
+}
+
+input CourseUpsertWithWhereUniqueWithoutNonEligibleStudentsInput {
+  where: CourseWhereUniqueInput!
+  update: CourseUpdateWithoutNonEligibleStudentsDataInput!
+  create: CourseCreateWithoutNonEligibleStudentsInput!
 }
 
 input CourseUpsertWithWhereUniqueWithoutStudentsInput {
@@ -707,6 +759,9 @@ input CourseWhereInput {
   students_every: StudentWhereInput
   students_some: StudentWhereInput
   students_none: StudentWhereInput
+  nonEligibleStudents_every: StudentWhereInput
+  nonEligibleStudents_some: StudentWhereInput
+  nonEligibleStudents_none: StudentWhereInput
 }
 
 input CourseWhereUniqueInput {
@@ -1812,6 +1867,7 @@ type Student implements Node {
   studentID: String!
   userInfo: User!
   courses(where: CourseWhereInput, orderBy: CourseOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Course!]
+  nonEligibleCourses(where: CourseWhereInput, orderBy: CourseOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Course!]
 }
 
 """A connection to a list of items."""
@@ -1829,6 +1885,7 @@ input StudentCreateInput {
   studentID: String!
   userInfo: UserCreateOneInput!
   courses: CourseCreateManyWithoutStudentsInput
+  nonEligibleCourses: CourseCreateManyWithoutNonEligibleStudentsInput
 }
 
 input StudentCreateManyInput {
@@ -1841,10 +1898,23 @@ input StudentCreateManyWithoutCoursesInput {
   connect: [StudentWhereUniqueInput!]
 }
 
+input StudentCreateManyWithoutNonEligibleCoursesInput {
+  create: [StudentCreateWithoutNonEligibleCoursesInput!]
+  connect: [StudentWhereUniqueInput!]
+}
+
 input StudentCreateWithoutCoursesInput {
   id: ID
   studentID: String!
   userInfo: UserCreateOneInput!
+  nonEligibleCourses: CourseCreateManyWithoutNonEligibleStudentsInput
+}
+
+input StudentCreateWithoutNonEligibleCoursesInput {
+  id: ID
+  studentID: String!
+  userInfo: UserCreateOneInput!
+  courses: CourseCreateManyWithoutStudentsInput
 }
 
 """An edge in a connection."""
@@ -2000,12 +2070,14 @@ input StudentUpdateDataInput {
   studentID: String
   userInfo: UserUpdateOneRequiredInput
   courses: CourseUpdateManyWithoutStudentsInput
+  nonEligibleCourses: CourseUpdateManyWithoutNonEligibleStudentsInput
 }
 
 input StudentUpdateInput {
   studentID: String
   userInfo: UserUpdateOneRequiredInput
   courses: CourseUpdateManyWithoutStudentsInput
+  nonEligibleCourses: CourseUpdateManyWithoutNonEligibleStudentsInput
 }
 
 input StudentUpdateManyDataInput {
@@ -2040,6 +2112,18 @@ input StudentUpdateManyWithoutCoursesInput {
   upsert: [StudentUpsertWithWhereUniqueWithoutCoursesInput!]
 }
 
+input StudentUpdateManyWithoutNonEligibleCoursesInput {
+  create: [StudentCreateWithoutNonEligibleCoursesInput!]
+  connect: [StudentWhereUniqueInput!]
+  set: [StudentWhereUniqueInput!]
+  disconnect: [StudentWhereUniqueInput!]
+  delete: [StudentWhereUniqueInput!]
+  update: [StudentUpdateWithWhereUniqueWithoutNonEligibleCoursesInput!]
+  updateMany: [StudentUpdateManyWithWhereNestedInput!]
+  deleteMany: [StudentScalarWhereInput!]
+  upsert: [StudentUpsertWithWhereUniqueWithoutNonEligibleCoursesInput!]
+}
+
 input StudentUpdateManyWithWhereNestedInput {
   where: StudentScalarWhereInput!
   data: StudentUpdateManyDataInput!
@@ -2048,6 +2132,13 @@ input StudentUpdateManyWithWhereNestedInput {
 input StudentUpdateWithoutCoursesDataInput {
   studentID: String
   userInfo: UserUpdateOneRequiredInput
+  nonEligibleCourses: CourseUpdateManyWithoutNonEligibleStudentsInput
+}
+
+input StudentUpdateWithoutNonEligibleCoursesDataInput {
+  studentID: String
+  userInfo: UserUpdateOneRequiredInput
+  courses: CourseUpdateManyWithoutStudentsInput
 }
 
 input StudentUpdateWithWhereUniqueNestedInput {
@@ -2060,6 +2151,11 @@ input StudentUpdateWithWhereUniqueWithoutCoursesInput {
   data: StudentUpdateWithoutCoursesDataInput!
 }
 
+input StudentUpdateWithWhereUniqueWithoutNonEligibleCoursesInput {
+  where: StudentWhereUniqueInput!
+  data: StudentUpdateWithoutNonEligibleCoursesDataInput!
+}
+
 input StudentUpsertWithWhereUniqueNestedInput {
   where: StudentWhereUniqueInput!
   update: StudentUpdateDataInput!
@@ -2070,6 +2166,12 @@ input StudentUpsertWithWhereUniqueWithoutCoursesInput {
   where: StudentWhereUniqueInput!
   update: StudentUpdateWithoutCoursesDataInput!
   create: StudentCreateWithoutCoursesInput!
+}
+
+input StudentUpsertWithWhereUniqueWithoutNonEligibleCoursesInput {
+  where: StudentWhereUniqueInput!
+  update: StudentUpdateWithoutNonEligibleCoursesDataInput!
+  create: StudentCreateWithoutNonEligibleCoursesInput!
 }
 
 input StudentWhereInput {
@@ -2165,6 +2267,9 @@ input StudentWhereInput {
   courses_every: CourseWhereInput
   courses_some: CourseWhereInput
   courses_none: CourseWhereInput
+  nonEligibleCourses_every: CourseWhereInput
+  nonEligibleCourses_some: CourseWhereInput
+  nonEligibleCourses_none: CourseWhereInput
 }
 
 input StudentWhereUniqueInput {

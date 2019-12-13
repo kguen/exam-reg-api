@@ -32,6 +32,9 @@ const Mutation = {
             courses: {
                 connect: [],
             },
+            nonEligibleCourses: {
+                connect: [],
+            }
         }
 
         opArgs.userInfo.create = {
@@ -42,8 +45,16 @@ const Mutation = {
         }
 
         if (data.courseIDs) {
-            for (let courseID of data.courseIDs) {
+            for (const courseID of data.courseIDs) {
                 opArgs.courses.connect.push({courseID})
+            }
+        }
+        if (data.nonEligibleCourseIDs) {
+            for (const courseID of data.nonEligibleCourseIDs) {
+                if (!data.courseIDs || !data.courseIDs.includes(courseID)) {
+                    throw new Error(`Student ${data.studentID} does not enroll in course ${courseID}!`)
+                }
+                opArgs.nonEligibleCourses.connect.push({courseID})
             }
         }
         return prisma.mutation.createStudent({data: opArgs}, info)
@@ -57,10 +68,21 @@ const Mutation = {
             students: {
                 connect: [],
             },
+            nonEligibleStudents: {
+                connect: [],
+            }
         }
         if (data.studentIDs) {
             for (const studentID of data.studentIDs) {
                 opArgs.students.connect.push({studentID})
+            }
+        }
+        if (data.nonEligibleStudentIDs) {
+            for (let studentID of data.nonEligibleStudentIDs) {
+                if (!data.studentIDs || !data.studentIDs.includes(studentID)) {
+                    throw new Error(`Student ${studentID} does not enroll in course ${data.courseID}!`);
+                }
+                opArgs.nonEligibleStudents.connect.push({studentID});
             }
         }
         return prisma.mutation.createCourse({data: opArgs}, info)
@@ -117,16 +139,17 @@ const Mutation = {
             },
         }
 
-        let studentsFromCourse = await prisma.query.course(
+        let thisCourse = await prisma.query.course(
             {
                 where: {courseID: data.courseID},
             },
-            '{ students { studentID } }'
+            '{ students { studentID } nonEligibleStudents { studentID } }'
         )
-        if (!studentsFromCourse) {
+        if (!thisCourse) {
             throw new Error(`Course ${data.courseID} does not exist!`)
         }
-        studentsFromCourse = studentsFromCourse.students.map(item => item.studentID)
+        thisCourse.students = thisCourse.students.map(item => item.studentID)
+        thisCourse.nonEligibleStudents = thisCourse.nonEligibleStudents.map(item => item.studentID)
 
         const roomData = await prisma.query.room(
             {
@@ -156,15 +179,19 @@ const Mutation = {
                     }
                 }
             )
-            if (!studentsFromCourse.includes(studentID)) {
+            if (!thisCourse.students.includes(studentID)) {
                 throw new Error(`Student ${studentID} did not enroll in course ${data.courseID}!`)
-            } else if (studentSessionsOnShift.length) {
+            } 
+            if (thisCourse.nonEligibleStudents.includes(studentID)) {
+                throw new Error(`Student ${studentID} is not eligible for course ${data.courseID}`)
+            } 
+            if (studentSessionsOnShift.length) {
                 throw new Error(`Student ${studentID} has another exam session at your time of choice!`)
-            } else if (studentSessionsOnCourse.length) {
+            } 
+            if (studentSessionsOnCourse.length) {
                 throw new Error(`Student ${studentID} already has another exam session for course ${data.courseID}!`)
-            } else {
-                opArgs.data.students.connect.push({studentID})
             }
+            opArgs.data.students.connect.push({studentID})
         }
         if (opArgs.data.students.connect.length > roomData.totalPC) {
             throw new Error(`Room ${data.roomID} cannot contain more than ${roomData.totalPC} students!`)
@@ -233,15 +260,50 @@ const Mutation = {
                 opArgs.userInfo.update.password = hashed
             }
         }
+
+        let coursesOfStudent = await prisma.query.student({
+            where: {studentID}
+        }, '{ courses { courseID } }')
+        coursesOfStudent = coursesOfStudent.courses.map(item => item.courseID)
+
         if (data.courseIDs) {
             opArgs.courses = {}
             if (data.courseIDs.connect) {
+                for (let courseID of data.courseIDs.connect) {
+                    if (!coursesOfStudent.includes(courseID)) {
+                        coursesOfStudent.push(courseID)
+                    }
+                }
                 opArgs.courses.connect = data.courseIDs.connect.map(courseID => {
                     return {courseID}
                 })
             }
             if (data.courseIDs.disconnect) {
+                for (let courseID of data.courseIDs.disconnect) {
+                    if (coursesOfStudent.includes(courseID)) {
+                        const index = coursesOfStudent.indexOf(courseID)
+                        coursesOfStudent.splice(index, 1)
+                    }
+                }
                 opArgs.courses.disconnect = data.courseIDs.disconnect.map(courseID => {
+                    return {courseID}
+                })
+            }
+        }
+        if (data.nonEligibleCourseIDs) {
+            opArgs.nonEligibleCourses = {}
+            if (data.nonEligibleCourseIDs.connect) {
+                for (let courseID of data.nonEligibleCourseIDs.connect) {
+                    if (!coursesOfStudent.includes(courseID)) {
+                        throw new Error(`Student ${studentID} does not enroll in course ${courseID}!`)
+                    }
+                }
+                opArgs.nonEligibleCourses.connect = data.nonEligibleCourseIDs.connect.map(courseID => {
+                    return {courseID}
+                })
+            }
+            if (data.nonEligibleCourseIDs.disconnect) {
+                opArgs.nonEligibleCourses.disconnect = data.nonEligibleCourseIDs.disconnect.map(courseID => {
                     return {courseID}
                 })
             }
@@ -261,15 +323,50 @@ const Mutation = {
             opArgs.name = args.data.name
             opArgs.normalizeName = removeAccent(args.data.name.toLowerCase())
         }
+        
+        let studentsOfCourse = await prisma.query.course({
+            where: {courseID: args.courseID}
+        }, '{ students { studentID } }')
+        studentsOfCourse = studentsOfCourse.students.map(item => item.studentID)
+
         if (args.data.studentIDs) {
             opArgs.students = {}
             if (args.data.studentIDs.connect) {
+                for (const studentID of args.data.studentIDs.connect) {
+                    if (!studentsOfCourse.includes(studentID)) {
+                        studentsOfCourse.push(studentID)
+                    }
+                }
                 opArgs.students.connect = args.data.studentIDs.connect.map(studentID => {
                     return {studentID}
                 })
             }
             if (args.data.studentIDs.disconnect) {
+                for (const studentID of args.data.studentIDs.disconnect) {
+                    if (studentsOfCourse.includes(studentID)) {
+                        const index = studentsOfCourse.indexOf(studentID)
+                        studentsOfCourse.splice(index, 1)
+                    }
+                }
                 opArgs.students.disconnect = args.data.studentIDs.disconnect.map(studentID => {
+                    return {studentID}
+                })
+            }
+        }
+        if (args.data.nonEligibleStudentIDs) {
+            opArgs.nonEligibleStudents = {}
+            if (args.data.nonEligibleStudentIDs.connect) {
+                for (let studentID of args.data.nonEligibleStudentIDs.connect) {
+                    if (!studentsOfCourse.includes(studentID)) {
+                        throw new Error(`Student ${studentID} does not enroll in course ${args.courseID}!`)
+                    }
+                }
+                opArgs.nonEligibleStudents.connect = args.data.nonEligibleStudentIDs.connect.map(studentID => {
+                    return {studentID}
+                })
+            }
+            if (args.data.nonEligibleStudentIDs.disconnect) {
+                opArgs.nonEligibleStudents.disconnect = data.nonEligibleStudentIDs.disconnect.map(studentID => {
                     return {studentID}
                 })
             }
@@ -320,31 +417,34 @@ const Mutation = {
             }
             if (args.data.studentIDs.disconnect) {
                 for (const studentID of args.data.studentIDs.disconnect) {
-                    if (!newSession.students.includes(studentID)) {
-                        throw new Error(`Student ${studentID} not currently enroll in this session!`)
+                    if (newSession.students.includes(studentID)) {
+                        const index = newSession.students.indexOf(studentID)
+                        newSession.students.splice(index, 1)
                     }
-                    const index = newSession.students.indexOf(studentID)
-                    newSession.students.splice(index, 1)
                 }
                 opArgs.students.disconnect = args.data.studentIDs.disconnect.map(studentID => {
                     return {studentID}
                 })
             }
         }
-        let studentsFromCourse = await prisma.query.course(
+        let thisCourse = await prisma.query.course(
             {
                 where: {courseID: newSession.course.courseID},
             },
-            '{ students { studentID } }'
+            '{ students { studentID } nonEligibleStudents { studentID } }'
         )
-        if (!studentsFromCourse) {
+        if (!thisCourse) {
             throw new Error(`Course ${newSession.course.courseID} does not exist!`)
         }
-        studentsFromCourse = studentsFromCourse.students.map(item => item.studentID)
+        thisCourse.students = thisCourse.students.map(item => item.studentID)
+        thisCourse.nonEligibleStudents = thisCourse.nonEligibleStudents.map(item => item.studentID)
 
         for (const studentID of newSession.students) {
-            if (!studentsFromCourse.includes(studentID)) {
+            if (!thisCourse.students.includes(studentID)) {
                 throw new Error(`Student ${studentID} did not enroll in course ${newSession.course.courseID}!`)
+            }
+            if (thisCourse.nonEligibleStudents.includes(studentID)) {
+                throw new Error(`Student ${studentID} is not eligible for course ${newSession.course.courseID}!`)
             }
         }
         if (args.data.shiftID || args.data.roomID) {

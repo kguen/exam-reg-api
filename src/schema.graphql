@@ -69,24 +69,28 @@ input StudentCreateInput {
     studentID: String!
     userInfo: UserInfoCreateInput!
     courseIDs: [String!]
+    nonEligibleCourseIDs: [String!]
 }
 
 input StudentUpdateInput {
     studentID: String
     userInfo: UserInfoUpdateInput
     courseIDs: ArrayUpdateInput
+    nonEligibleCourseIDs: ArrayUpdateInput
 }
 
 input CourseCreateInput {
     courseID: String!
     name: String!
     studentIDs: [String!]
+    nonEligibleStudentIDs: [String!]
 }
 
 input CourseUpdateInput {
     courseID: String
     name: String
     studentIDs: ArrayUpdateInput
+    nonEligibleStudentIDs: ArrayUpdateInput
 }
 
 input SessionCreateInput {
@@ -149,6 +153,7 @@ type Student {
     studentID: String!
     userInfo: User!
     courses: [Course!]
+    nonEligibleCourses: [Course!]
 }
 
 type Course {
@@ -157,6 +162,7 @@ type Course {
     name: String!
     sessions: [Session!]!
     students: [Student!]!
+    nonEligibleStudents: [Student!]!
 }
 
 type Shift {
