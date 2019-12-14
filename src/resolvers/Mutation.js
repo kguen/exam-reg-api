@@ -61,7 +61,6 @@ const Mutation = {
     },
 
     createCourse: async (parent, {data}, {prisma}, info) => {
-        console.log(data)
 
         const opArgs = {
             courseID: data.courseID.toUpperCase(),
@@ -669,4 +668,4 @@ const Mutation = {
 
 export {Mutation as default}
 
-export const {createCourse} = Mutation
+export const {createCourse, createRoom, createStudent, createShift} = Mutation
