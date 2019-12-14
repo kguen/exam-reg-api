@@ -1,9 +1,11 @@
-import {GraphQLServer} from 'graphql-yoga'
 import cookieParser from 'cookie-parser'
 import jwt from 'jsonwebtoken'
+import {GraphQLServer} from 'graphql-yoga'
 import prisma from './prisma'
-import {resolvers, fragmentReplacements} from './resolvers/index'
+import {uploadRouter} from './routes'
+
 import {AuthenticationDirective, AuthorizationDirective} from './directives'
+import {resolvers, fragmentReplacements} from './resolvers/index'
 
 require('dotenv').config({path: '.env'})
 
@@ -51,6 +53,8 @@ server.express.use(async (req, res, next) => {
     req.user = user
     next()
 })
+
+server.express.use('/upload', uploadRouter)
 
 const opts = {
     port: 4000,

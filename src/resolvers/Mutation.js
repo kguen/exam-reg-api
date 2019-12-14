@@ -34,14 +34,14 @@ const Mutation = {
             },
             nonEligibleCourses: {
                 connect: [],
-            }
+            },
         }
 
         opArgs.userInfo.create = {
             name,
             password: hashed,
             normalizeName: removeAccent(name.toLowerCase()),
-            email
+            email,
         }
 
         if (data.courseIDs) {
@@ -61,6 +61,8 @@ const Mutation = {
     },
 
     createCourse: async (parent, {data}, {prisma}, info) => {
+        console.log(data)
+
         const opArgs = {
             courseID: data.courseID.toUpperCase(),
             name: data.name,
@@ -70,7 +72,7 @@ const Mutation = {
             },
             nonEligibleStudents: {
                 connect: [],
-            }
+            },
         }
         if (data.studentIDs) {
             for (const studentID of data.studentIDs) {
@@ -80,9 +82,9 @@ const Mutation = {
         if (data.nonEligibleStudentIDs) {
             for (let studentID of data.nonEligibleStudentIDs) {
                 if (!data.studentIDs || !data.studentIDs.includes(studentID)) {
-                    throw new Error(`Student ${studentID} does not enroll in course ${data.courseID}!`);
+                    throw new Error(`Student ${studentID} does not enroll in course ${data.courseID}!`)
                 }
-                opArgs.nonEligibleStudents.connect.push({studentID});
+                opArgs.nonEligibleStudents.connect.push({studentID})
             }
         }
         return prisma.mutation.createCourse({data: opArgs}, info)
@@ -171,23 +173,21 @@ const Mutation = {
                 },
                 '{ id }'
             )
-            const studentSessionsOnCourse = await prisma.query.sessions(
-                {
-                    where: {
-                        students_some: {studentID},
-                        course: {courseID: data.courseID}
-                    }
-                }
-            )
+            const studentSessionsOnCourse = await prisma.query.sessions({
+                where: {
+                    students_some: {studentID},
+                    course: {courseID: data.courseID},
+                },
+            })
             if (!thisCourse.students.includes(studentID)) {
                 throw new Error(`Student ${studentID} did not enroll in course ${data.courseID}!`)
-            } 
+            }
             if (thisCourse.nonEligibleStudents.includes(studentID)) {
                 throw new Error(`Student ${studentID} is not eligible for course ${data.courseID}`)
-            } 
+            }
             if (studentSessionsOnShift.length) {
                 throw new Error(`Student ${studentID} has another exam session at your time of choice!`)
-            } 
+            }
             if (studentSessionsOnCourse.length) {
                 throw new Error(`Student ${studentID} already has another exam session for course ${data.courseID}!`)
             }
@@ -261,9 +261,12 @@ const Mutation = {
             }
         }
 
-        let coursesOfStudent = await prisma.query.student({
-            where: {studentID}
-        }, '{ courses { courseID } }')
+        let coursesOfStudent = await prisma.query.student(
+            {
+                where: {studentID},
+            },
+            '{ courses { courseID } }'
+        )
         coursesOfStudent = coursesOfStudent.courses.map(item => item.courseID)
 
         if (data.courseIDs) {
@@ -323,10 +326,13 @@ const Mutation = {
             opArgs.name = args.data.name
             opArgs.normalizeName = removeAccent(args.data.name.toLowerCase())
         }
-        
-        let studentsOfCourse = await prisma.query.course({
-            where: {courseID: args.courseID}
-        }, '{ students { studentID } }')
+
+        let studentsOfCourse = await prisma.query.course(
+            {
+                where: {courseID: args.courseID},
+            },
+            '{ students { studentID } }'
+        )
         studentsOfCourse = studentsOfCourse.students.map(item => item.studentID)
 
         if (args.data.studentIDs) {
@@ -497,14 +503,12 @@ const Mutation = {
                 },
                 '{ id }'
             )
-            const studentSessionsOnCourse = await prisma.query.sessions(
-                {
-                    where: {
-                        students_some: {studentID},
-                        course: {courseID: newSession.course.courseID}
-                    }
-                }
-            )
+            const studentSessionsOnCourse = await prisma.query.sessions({
+                where: {
+                    students_some: {studentID},
+                    course: {courseID: newSession.course.courseID},
+                },
+            })
             if (studentSessionsOnShift.length) {
                 throw new Error(`Student ${studentID} has another exam session at your time of choice!`)
             }
@@ -546,9 +550,7 @@ const Mutation = {
             throw new Error(`Student ${args.studentID} did not enroll in course ${session.course.courseID}!`)
         }
         if (session.room.totalPC === session.students.length) {
-            throw new Error(
-                `Room ${session.room.roomID} cannot contain more than ${session.room.totalPC} students!`
-            )
+            throw new Error(`Room ${session.room.roomID} cannot contain more than ${session.room.totalPC} students!`)
         }
         const studentSessionsOnShift = await prisma.query.sessions(
             {
@@ -559,14 +561,12 @@ const Mutation = {
             },
             '{ id }'
         )
-        const studentSessionsOnCourse = await prisma.query.sessions(
-            {
-                where: {
-                    students_some: {studentID: args.studentID},
-                    course: {courseID: session.course.courseID}
-                }
-            }
-        )
+        const studentSessionsOnCourse = await prisma.query.sessions({
+            where: {
+                students_some: {studentID: args.studentID},
+                course: {courseID: session.course.courseID},
+            },
+        })
         if (studentSessionsOnShift.length) {
             throw new Error(`Student ${args.studentID} has another exam session at your time of choice!`)
         }
@@ -575,14 +575,17 @@ const Mutation = {
                 `Student ${args.studentID} already has another exam session for course ${session.course.courseID}!`
             )
         }
-        return prisma.mutation.updateSession({
-            where: {id: args.id},
-            data: {
-                students: {
-                    connect: [{studentID: args.studentID}]
-                }
+        return prisma.mutation.updateSession(
+            {
+                where: {id: args.id},
+                data: {
+                    students: {
+                        connect: [{studentID: args.studentID}],
+                    },
+                },
             },
-        }, info)
+            info
+        )
     },
 
     updateShift: async (parent, args, {prisma}, info) => {
@@ -665,3 +668,5 @@ const Mutation = {
 }
 
 export {Mutation as default}
+
+export const {createCourse} = Mutation

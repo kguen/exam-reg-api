@@ -1,5 +1,5 @@
 # source: http://localhost:4466/exam
-# timestamp: Fri Dec 13 2019 21:14:34 GMT+0700 (Indochina Time)
+# timestamp: Sat Dec 14 2019 16:03:17 GMT+0700 (Indochina Time)
 
 type Admin implements Node {
   id: ID!
