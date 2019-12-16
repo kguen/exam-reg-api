@@ -65,7 +65,7 @@ const Query = {
                 opArgs.where.students_some = {studentID: query.studentID}
             }
             if (query.shift) {
-                opArgs.where.shift = query.shift
+                opArgs.where.shift = {shiftID: query.shiftID}
             }
         }
         return prisma.query.sessions(opArgs, info)

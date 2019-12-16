@@ -1,5 +1,5 @@
 # source: http://localhost:4466/exam
-# timestamp: Sat Dec 14 2019 16:03:17 GMT+0700 (Indochina Time)
+# timestamp: Mon Dec 16 2019 23:23:55 GMT+0700 (Indochina Time)
 
 type Admin implements Node {
   id: ID!
@@ -1553,6 +1553,7 @@ input SessionWhereUniqueInput {
 
 type Shift implements Node {
   id: ID!
+  shiftID: ID!
   date: String!
   startTime: String!
   endTime: String!
@@ -1571,6 +1572,7 @@ type ShiftConnection {
 
 input ShiftCreateInput {
   id: ID
+  shiftID: ID!
   date: String!
   startTime: String!
   endTime: String!
@@ -1584,6 +1586,7 @@ input ShiftCreateOneWithoutSessionsInput {
 
 input ShiftCreateWithoutSessionsInput {
   id: ID
+  shiftID: ID!
   date: String!
   startTime: String!
   endTime: String!
@@ -1601,6 +1604,8 @@ type ShiftEdge {
 enum ShiftOrderByInput {
   id_ASC
   id_DESC
+  shiftID_ASC
+  shiftID_DESC
   date_ASC
   date_DESC
   startTime_ASC
@@ -1611,6 +1616,7 @@ enum ShiftOrderByInput {
 
 type ShiftPreviousValues {
   id: ID!
+  shiftID: ID!
   date: String!
   startTime: String!
   endTime: String!
@@ -1654,6 +1660,7 @@ input ShiftSubscriptionWhereInput {
 }
 
 input ShiftUpdateInput {
+  shiftID: ID
   date: String
   startTime: String
   endTime: String
@@ -1661,6 +1668,7 @@ input ShiftUpdateInput {
 }
 
 input ShiftUpdateManyMutationInput {
+  shiftID: ID
   date: String
   startTime: String
   endTime: String
@@ -1674,6 +1682,7 @@ input ShiftUpdateOneRequiredWithoutSessionsInput {
 }
 
 input ShiftUpdateWithoutSessionsDataInput {
+  shiftID: ID
   date: String
   startTime: String
   endTime: String
@@ -1733,6 +1742,46 @@ input ShiftWhereInput {
 
   """All values not ending with the given string."""
   id_not_ends_with: ID
+  shiftID: ID
+
+  """All values that are not equal to given value."""
+  shiftID_not: ID
+
+  """All values that are contained in given list."""
+  shiftID_in: [ID!]
+
+  """All values that are not contained in given list."""
+  shiftID_not_in: [ID!]
+
+  """All values less than the given value."""
+  shiftID_lt: ID
+
+  """All values less than or equal the given value."""
+  shiftID_lte: ID
+
+  """All values greater than the given value."""
+  shiftID_gt: ID
+
+  """All values greater than or equal the given value."""
+  shiftID_gte: ID
+
+  """All values containing the given string."""
+  shiftID_contains: ID
+
+  """All values not containing the given string."""
+  shiftID_not_contains: ID
+
+  """All values starting with the given string."""
+  shiftID_starts_with: ID
+
+  """All values not starting with the given string."""
+  shiftID_not_starts_with: ID
+
+  """All values ending with the given string."""
+  shiftID_ends_with: ID
+
+  """All values not ending with the given string."""
+  shiftID_not_ends_with: ID
   date: String
 
   """All values that are not equal to given value."""
@@ -1860,6 +1909,7 @@ input ShiftWhereInput {
 
 input ShiftWhereUniqueInput {
   id: ID
+  shiftID: ID
 }
 
 type Student implements Node {

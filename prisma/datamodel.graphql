@@ -37,6 +37,7 @@ type Course {
 
 type Shift {
     id: ID! @id
+    shiftID: ID! @unique
     date: String!
     startTime: String!
     endTime: String!

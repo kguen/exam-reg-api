@@ -119,12 +119,12 @@ const Mutation = {
     },
 
     createSession: async (parent, {data}, {prisma}, info) => {
-        const shiftExists = await prisma.exists.Shift({id: data.shiftID})
+        const shiftExists = await prisma.exists.Shift({shiftID: data.shiftID})
         if (!shiftExists) {
             throw new Error(`There's no shift that existed with id ${data.shiftID}`)
         }
         const sessionExists = await prisma.exists.Session({
-            shift: {id: data.shiftID},
+            shift: {shiftID: data.shiftID},
             room: {roomID: data.roomID},
         })
         if (sessionExists) {
@@ -135,7 +135,7 @@ const Mutation = {
             data: {
                 course: {connect: {courseID: data.courseID}},
                 room: {connect: {roomID: data.roomID}},
-                shift: {connect: {id: data.shiftID}},
+                shift: {connect: {shiftID: data.shiftID}},
                 students: {connect: []},
             },
         }
@@ -167,7 +167,7 @@ const Mutation = {
                 {
                     where: {
                         students_some: {studentID},
-                        shift: {id: data.shiftID},
+                        shift: {shiftID: data.shiftID},
                     },
                 },
                 '{ id }'
@@ -237,7 +237,7 @@ const Mutation = {
     deleteShift: async (parent, args, {prisma}, info) => {
         return prisma.mutation.deleteShift(
             {
-                where: {id: args.id},
+                where: {shiftID: args.shiftID},
             },
             info
         )
@@ -390,7 +390,7 @@ const Mutation = {
             {
                 where: {id: args.id},
             },
-            '{ course { courseID } students { studentID } shift { id } room { roomID totalPC } }'
+            '{ course { courseID } students { studentID } shift { shiftID } room { roomID totalPC } }'
         )
 
         if (!newSession) {
@@ -475,16 +475,16 @@ const Mutation = {
             }
             if (args.data.shiftID) {
                 const shiftExists = await prisma.exists.Shift({
-                    id: args.data.shiftID,
+                    shiftID: args.data.shiftID,
                 })
                 if (!shiftExists) {
                     throw new Error(`There's no shift that exists with id ${args.data.shiftID}!`)
                 }
-                newSession.shift.id = args.data.shiftID
-                opArgs.shift.connect = {id: args.data.shiftID}
+                newSession.shift.shiftID = args.data.shiftID
+                opArgs.shift.connect = {shiftID: args.data.shiftID}
             }
             const sessionExist = await prisma.exists.Session({
-                shift: {id: newSession.shift.id},
+                shift: {shiftID: newSession.shift.shiftID},
                 room: {roomID: newSession.room.roomID},
                 id_not: args.id,
             })
@@ -497,17 +497,23 @@ const Mutation = {
                 {
                     where: {
                         students_some: {studentID},
-                        shift: {id: newSession.shift.id},
+                        shift: {shiftID: newSession.shift.shiftID},
+                        id_not: args.id
                     },
                 },
                 '{ id }'
             )
-            const studentSessionsOnCourse = await prisma.query.sessions({
-                where: {
-                    students_some: {studentID},
-                    course: {courseID: newSession.course.courseID},
-                },
-            })
+            const studentSessionsOnCourse = await prisma.query.sessions(
+                {
+                    where: {
+                        students_some: {studentID},
+                        course: {courseID: newSession.course.courseID},
+                        id_not: args.id
+                    }
+                }, 
+                '{ id }'
+            )
+            console.log(studentSessionsOnShift, studentSessionsOnCourse)
             if (studentSessionsOnShift.length) {
                 throw new Error(`Student ${studentID} has another exam session at your time of choice!`)
             }
@@ -531,7 +537,7 @@ const Mutation = {
             {
                 where: {id: args.id},
             },
-            '{ course { courseID } students { studentID } shift { id } room { roomID totalPC } }'
+            '{ course { courseID } students { studentID } shift { shiftID } room { roomID totalPC } }'
         )
         if (!session) {
             throw new Error(`There's no session that exists with id ${args.id}!`)
@@ -555,17 +561,22 @@ const Mutation = {
             {
                 where: {
                     students_some: {studentID: args.studentID},
-                    shift: {id: session.shift.id},
+                    shift: {shiftID: session.shift.shiftID},
+                    id_not: args.id
                 },
             },
             '{ id }'
         )
-        const studentSessionsOnCourse = await prisma.query.sessions({
-            where: {
-                students_some: {studentID: args.studentID},
-                course: {courseID: session.course.courseID},
+        const studentSessionsOnCourse = await prisma.query.sessions(
+            {
+                where: {
+                    students_some: {studentID: args.studentID},
+                    course: {courseID: session.course.courseID},
+                    id_not: args.id
+                },
             },
-        })
+            '{ id }'
+        )
         if (studentSessionsOnShift.length) {
             throw new Error(`Student ${args.studentID} has another exam session at your time of choice!`)
         }
@@ -590,12 +601,12 @@ const Mutation = {
     updateShift: async (parent, args, {prisma}, info) => {
         let newShift = await prisma.query.shift(
             {
-                where: {id: args.id},
+                where: {shiftID: args.shiftID},
             },
             '{ date startTime endTime }'
         )
         if (!newShift) {
-            throw new Error(`There's no shift that exists with id ${args.id}!`)
+            throw new Error(`There's no shift that exists with id ${args.shiftID}!`)
         }
         if (args.data.date) {
             newShift.date = formatDate(args.data.date)
@@ -615,7 +626,7 @@ const Mutation = {
             {
                 where: {
                     date: newShift.date,
-                    id_not: args.id,
+                    shiftID_not: args.shiftID,
                 },
             },
             '{ startTime endTime }'
@@ -631,7 +642,7 @@ const Mutation = {
         }
         return prisma.mutation.updateShift(
             {
-                where: {id: args.id},
+                where: {shiftID: args.shiftID},
                 data: args.data,
             },
             info

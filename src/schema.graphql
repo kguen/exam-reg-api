@@ -21,7 +21,7 @@ type Mutation {
     deleteStudent(studentID: String!): Student! @authorized(role: ADMIN)
     deleteCourse(courseID: String!): Course! @authorized(role: ADMIN)
     deleteSession(id: ID!): Session! @authorized(role: ADMIN)
-    deleteShift(id: ID!): Shift! @authorized(role: ADMIN)
+    deleteShift(shiftID: String!): Shift! @authorized(role: ADMIN)
     deleteRoom(roomID: String!): Room! @authorized(role: ADMIN)
     updateStudent(studentID: String!, data: StudentUpdateInput!): Student!
         @authenticated
@@ -30,7 +30,7 @@ type Mutation {
     updateSession(id: ID!, data: SessionUpdateInput!): Session!
         @authorized(role: ADMIN)
     registerToSession(id: ID!, studentID: String!): Session! @authenticated
-    updateShift(id: ID!, data: ShiftUpdateInput!): Shift!
+    updateShift(shiftID: String!, data: ShiftUpdateInput!): Shift!
         @authorized(role: ADMIN)
     updateRoom(roomID: String!, data: RoomUpdateInput!): Room!
         @authorized(role: ADMIN)
@@ -103,31 +103,27 @@ input SessionCreateInput {
 input SessionUpdateInput {
     name: String
     courseID: String
-    shiftID: ID
+    shiftID: String
     roomID: String
     studentIDs: ArrayUpdateInput
 }
 
 input SessionQueryInput {
-    shift: ShiftQueryInput
+    shiftID: String
     courseID: String
     roomID: String
     studentID: String
 }
 
 input ShiftCreateInput {
+    shiftID: String!
     date: String!
     startTime: String!
     endTime: String!
 }
 
-input ShiftQueryInput {
-    date: String
-    startTime: String
-    endTime: String
-}
-
 input ShiftUpdateInput {
+    shiftID: String
     date: String
     startTime: String
     endTime: String
@@ -167,6 +163,7 @@ type Course {
 
 type Shift {
     id: ID!
+    shiftID: String!
     date: String!
     startTime: String!
     endTime: String!
