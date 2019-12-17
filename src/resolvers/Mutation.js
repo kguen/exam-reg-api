@@ -22,6 +22,7 @@ const Mutation = {
         })
         return {user, token}
     },
+    
     createStudent: async (parent, {data}, {prisma}, info) => {
         const {password, email, name} = data.userInfo
         const hashed = await bcrypt.hash(password, 10)
@@ -61,7 +62,6 @@ const Mutation = {
     },
 
     createCourse: async (parent, {data}, {prisma}, info) => {
-
         const opArgs = {
             courseID: data.courseID.toUpperCase(),
             name: data.name,
