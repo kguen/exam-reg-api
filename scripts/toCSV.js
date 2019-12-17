@@ -26,86 +26,103 @@ let students = [
 
 let shifts = [
     {
+        shiftID: '01',
         date: '24/12/2019',
         startTime: '07:00',
         endTime: '08:00',
     },
     {
+        shiftID: '02',
         date: '24/12/2019',
         startTime: '08:00',
         endTime: '09:00',
     },
     {
+        shiftID: '03',
         date: '24/12/2019',
         startTime: '13:00',
         endTime: '14:00',
     },
     {
+        shiftID: '04',
         date: '25/12/2019',
         startTime: '10:00',
         endTime: '11:00',
     },
     {
+        shiftID: '05',
         date: '26/12/2019',
         startTime: '17:00',
         endTime: '18:00',
     },
     {
+        shiftID: '06',
         date: '27/12/2019',
         startTime: '18:00',
         endTime: '19:00',
     },
     {
+        shiftID: '07',
         date: '28/12/2019',
         startTime: '11:00',
         endTime: '12:00',
     },
     {
+        shiftID: '08',
         date: '01/01/2020',
         startTime: '12:00',
         endTime: '13:00',
     },
     {
+        shiftID: '09',
         date: '02/01/2020',
         startTime: '13:00',
         endTime: '14:00',
     },
     {
+        shiftID: '10',
         date: '03/01/2020',
         startTime: '14:00',
         endTime: '15:00',
     },
     {
+        shiftID: '11',
         date: '04/01/2020',
         startTime: '08:00',
         endTime: '09:00',
     },
     {
+        shiftID: '12',
         date: '05/01/2020',
         startTime: '08:00',
         endTime: '09:00',
     },
     {
+        shiftID: '13',
         date: '06/01/2020',
         startTime: '13:00',
         endTime: '15:00',
     },
     {
+        shiftID: '14',
         date: '07/01/2020',
         startTime: '07:00',
         endTime: '09:00',
     },
     {
+        shiftID: '15',
         date: '08/01/2020',
         startTime: '08:00',
         endTime: '09:00',
     },
     {
+        shiftID: '16',
         date: '09/01/2020',
         startTime: '14:00',
-        endTime: '06:00',
+        endTime: '16:00',
     },
     {
+        shiftID: '17',
         date: '10/01/2020',
         startTime: '06:00',
         endTime: '07:00',
@@ -239,7 +256,7 @@ const studentHeader = ['name', 'studentID', 'email', 'courses', 'nonEligibleCour
 
 const roomHeader = ['roomID', 'totalPC']
 
-const shiftHeader = ['date', 'startTime', 'endTime']
+const shiftHeader = ['shiftID', 'date', 'startTime', 'endTime']
 
 const options = {
     fieldSeparator: ',',
@@ -250,7 +267,7 @@ const options = {
     title: 'students',
     useTextFile: false,
     useBom: true,
-    headers: studentHeader,
+    headers: shiftHeader,
     // useKeysAsHeaders: true,
     // headers: ['Column 1', 'Column 2', etc...] <-- Won't work with useKeysAsHeaders present!
 }
@@ -259,5 +276,5 @@ const csvExporter = new ExportToCsv(options)
 
 const fs = require('fs')
 
-const csvData = csvExporter.generateCsv(students, true)
-fs.writeFileSync('students.csv', csvData)
+const csvData = csvExporter.generateCsv(shifts, true)
+fs.writeFileSync(`shifts.csv`, csvData)

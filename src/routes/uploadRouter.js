@@ -115,7 +115,7 @@ router.post('/students', upload.single('students'), async (req, res) => {
 router.post('/shifts', upload.single('shifts'), async (req, res) => {
     try {
         const filePath = req?.file?.path
-        const headers = ['date', 'startTime', 'endTime']
+        const headers = ['shiftID', 'date', 'startTime', 'endTime']
 
         if (!filePath) {
             res.send({
