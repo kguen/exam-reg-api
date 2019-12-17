@@ -5,7 +5,7 @@ import csv from 'csv-parser'
 import fs from 'fs'
 import bcrypt from 'bcryptjs'
 import prisma from '../prisma'
-import {createCourse, createStudent, createRoom, createShift} from '../resolvers/Mutation'
+import {createCourse, createStudent, createRoom, createShift, createSession} from '../resolvers/Mutation'
 
 const upload = multer({dest: 'tmp/csv/'})
 
@@ -159,6 +159,35 @@ router.post('/rooms', upload.single('rooms'), async (req, res) => {
         }
 
         res.send({success: true, message: 'Import rooms successfully'})
+    } catch (error) {
+        res.send({
+            success: false,
+            message: error.message,
+        })
+    }
+})
+
+router.post('/sessions', upload.single('sessions'), async (req, res) => {
+    try {
+        const filePath = req?.file?.path
+        const headers = ['courseID', 'shiftID', 'roomID', 'students']
+
+        if (!filePath) {
+            res.send({
+                success: false,
+                message: 'No file found!',
+            })
+        }
+
+        let sessions = await parseFile(headers, filePath)
+
+        for (const session of sessions) {
+            session.studentIDs = session.students.split(',').map(student => student.trim())
+            delete session.students
+            await createSession(null, {data: session}, {prisma}, null)
+        }
+
+        res.send({success: true, message: 'Import sessions successfully'})
     } catch (error) {
         res.send({
             success: false,

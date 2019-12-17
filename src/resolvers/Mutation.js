@@ -679,4 +679,4 @@ const Mutation = {
 
 export {Mutation as default}
 
-export const {createCourse, createRoom, createStudent, createShift} = Mutation
+export const {createCourse, createRoom, createStudent, createShift, createSession} = Mutation
