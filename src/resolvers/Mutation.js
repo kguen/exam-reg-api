@@ -532,7 +532,18 @@ const Mutation = {
         )
     },
 
-    registerToSession: async (parent, args, {prisma}, info) => {
+    registerToSession: async (parent, args, {prisma, user}, info) => {
+        if (user.userType === 'USER') {
+            const studentExists = await prisma.exists.Student({
+                studentID: args.studentID,
+                userInfo: {
+                    id: user.userID
+                }                
+            });
+            if (!studentExists) {
+                throw new Error('Wrong authenticated student!');
+            }
+        }
         const session = await prisma.query.session(
             {
                 where: {id: args.id},
@@ -596,6 +607,44 @@ const Mutation = {
             },
             info
         )
+    },
+
+    unregisterFromSession: async (parent, args, {prisma, user}, info) => {
+        if (user.userType === 'USER') {
+            const studentExists = await prisma.exists.Student({
+                studentID: args.studentID,
+                userInfo: {
+                    id: user.userID
+                }                
+            });
+            if (!studentExists) {
+                throw new Error('Wrong authenticated student!');
+            }
+        }
+        const session = await prisma.query.session(
+            {
+                where: {id: args.id},
+            },
+            '{ students { studentID }}'
+        )
+        if (!session) {
+            throw new Error(`There's no session that exists with id ${args.id}!`)
+        }
+        if (session.students.some(item => item.studentID === args.studentID)) {
+            return prisma.mutation.updateSession(
+                {
+                    where: {id: args.id},
+                    data: {
+                        students: {
+                            disconnect: [{studentID: args.studentID}],
+                        },
+                    },
+                },
+                info
+            )
+        } else {
+            throw new Error(`Student ${args.studentID} does not enroll in this session!`)
+        }
     },
 
     updateShift: async (parent, args, {prisma}, info) => {
@@ -674,7 +723,7 @@ const Mutation = {
             },
             info
         )
-    },
+    }
 }
 
 export {Mutation as default}
