@@ -30,6 +30,7 @@ type Mutation {
     updateSession(id: ID!, data: SessionUpdateInput!): Session!
         @authorized(role: ADMIN)
     registerToSession(id: ID!, studentID: String!): Session! @authenticated
+    unregisterFromSession(id: ID!, studentID: String!): Session! @authenticated
     updateShift(shiftID: String!, data: ShiftUpdateInput!): Shift!
         @authorized(role: ADMIN)
     updateRoom(roomID: String!, data: RoomUpdateInput!): Room!
