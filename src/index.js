@@ -60,7 +60,7 @@ const opts = {
     port: 4000,
     cors: {
         credentials: true,
-        origin: ['http://localhost:3000'], // frontend url.
+        origin: ['http://localhost:3000', 'https://postwoman.io'], // frontend url.
     },
 }
 
