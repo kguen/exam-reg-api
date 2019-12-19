@@ -91,15 +91,15 @@ router.post('/students', upload.single('students'), async (req, res) => {
         let students = await parseFile(headers, filePath)
 
         for (const student of students) {
-            const hashed = await bcrypt.hash(student.studentID, 10)
             student.userInfo = {}
             student.userInfo.name = student.name
             student.userInfo.email = student.email
-            student.userInfo.password = hashed
+            student.userInfo.password = student.password
             student.courseIDs = student.courses.split(',').map(course => course.trim())
             student.nonEligibleCourseIDs = student.nonEligibleCourses.split(',').map(course => course.trim())
             delete student.name
             delete student.email
+            delete student.password
             await createStudent(null, {data: student}, {prisma}, null)
         }
 
