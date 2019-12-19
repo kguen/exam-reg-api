@@ -94,7 +94,7 @@ router.post('/students', upload.single('students'), async (req, res) => {
             student.userInfo = {}
             student.userInfo.name = student.name
             student.userInfo.email = student.email
-            student.userInfo.password = student.password
+            student.userInfo.password = student.studentID
             student.courseIDs = student.courses.split(',').map(course => course.trim())
             student.nonEligibleCourseIDs = student.nonEligibleCourses.split(',').map(course => course.trim())
             delete student.name
