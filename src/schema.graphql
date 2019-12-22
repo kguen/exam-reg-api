@@ -2,6 +2,10 @@
 directive @authenticated on FIELD_DEFINITION
 directive @authorized(role: Permission!) on FIELD_DEFINITION
 
+type SuccessMessage {
+  message: String
+}
+
 type Query {
     me: UserPayload
     students(query: String): [Student!]! @authenticated
@@ -13,6 +17,7 @@ type Query {
 
 type Mutation {
     signIn(data: UserSignInInput!): AuthPayload!
+    signout: SuccessMessage
     createStudent(data: StudentCreateInput!): Student! @authorized(role: ADMIN)
     createCourse(data: CourseCreateInput!): Course! @authorized(role: ADMIN)
     createSession(data: SessionCreateInput!): Session! @authorized(role: ADMIN)

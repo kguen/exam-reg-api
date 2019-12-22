@@ -3,7 +3,6 @@ import multer from 'multer'
 import {promisify} from 'util'
 import csv from 'csv-parser'
 import fs from 'fs'
-import bcrypt from 'bcryptjs'
 import prisma from '../prisma'
 import {createCourse, createStudent, createRoom, createShift, createSession} from '../resolvers/Mutation'
 

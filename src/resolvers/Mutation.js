@@ -22,7 +22,12 @@ const Mutation = {
         })
         return {user, token}
     },
-    
+
+    signout(parent, args, {res, prisma}, info) {
+        res.clearCookie('token')
+        return {message: 'Logged out'}
+    },
+
     createStudent: async (parent, {data}, {prisma}, info) => {
         const {password, email, name} = data.userInfo
         const hashed = await bcrypt.hash(password, 10)
@@ -371,7 +376,7 @@ const Mutation = {
                 })
             }
             if (args.data.nonEligibleStudentIDs.disconnect) {
-                opArgs.nonEligibleStudents.disconnect = data.nonEligibleStudentIDs.disconnect.map(studentID => {
+                opArgs.nonEligibleStudents.disconnect = args.data.nonEligibleStudentIDs.disconnect.map(studentID => {
                     return {studentID}
                 })
             }
@@ -498,7 +503,7 @@ const Mutation = {
                     where: {
                         students_some: {studentID},
                         shift: {shiftID: newSession.shift.shiftID},
-                        id_not: args.id
+                        id_not: args.id,
                     },
                 },
                 '{ id }'
@@ -508,9 +513,9 @@ const Mutation = {
                     where: {
                         students_some: {studentID},
                         course: {courseID: newSession.course.courseID},
-                        id_not: args.id
-                    }
-                }, 
+                        id_not: args.id,
+                    },
+                },
                 '{ id }'
             )
             console.log(studentSessionsOnShift, studentSessionsOnCourse)
@@ -537,11 +542,11 @@ const Mutation = {
             const studentExists = await prisma.exists.Student({
                 studentID: args.studentID,
                 userInfo: {
-                    id: user.userID
-                }                
-            });
+                    id: user.userID,
+                },
+            })
             if (!studentExists) {
-                throw new Error('Wrong authenticated student!');
+                throw new Error('Wrong authenticated student!')
             }
         }
         const session = await prisma.query.session(
@@ -573,7 +578,7 @@ const Mutation = {
                 where: {
                     students_some: {studentID: args.studentID},
                     shift: {shiftID: session.shift.shiftID},
-                    id_not: args.id
+                    id_not: args.id,
                 },
             },
             '{ id }'
@@ -583,7 +588,7 @@ const Mutation = {
                 where: {
                     students_some: {studentID: args.studentID},
                     course: {courseID: session.course.courseID},
-                    id_not: args.id
+                    id_not: args.id,
                 },
             },
             '{ id }'
@@ -614,11 +619,11 @@ const Mutation = {
             const studentExists = await prisma.exists.Student({
                 studentID: args.studentID,
                 userInfo: {
-                    id: user.userID
-                }                
-            });
+                    id: user.userID,
+                },
+            })
             if (!studentExists) {
-                throw new Error('Wrong authenticated student!');
+                throw new Error('Wrong authenticated student!')
             }
         }
         const session = await prisma.query.session(
@@ -642,9 +647,8 @@ const Mutation = {
                 },
                 info
             )
-        } else {
-            throw new Error(`Student ${args.studentID} does not enroll in this session!`)
         }
+        throw new Error(`Student ${args.studentID} does not enroll in this session!`)
     },
 
     updateShift: async (parent, args, {prisma}, info) => {
@@ -723,7 +727,7 @@ const Mutation = {
             },
             info
         )
-    }
+    },
 }
 
 export {Mutation as default}
