@@ -115,6 +115,7 @@ input SessionUpdateInput {
 }
 
 input SessionQueryInput {
+  sessionID: String
   shiftID: String
   courseID: String
   roomID: String

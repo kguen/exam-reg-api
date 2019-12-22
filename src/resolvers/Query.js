@@ -55,6 +55,10 @@ const Query = {
     sessions: async (parent, {query}, {prisma}, info) => {
         const opArgs = {where: {}}
         if (query) {
+            if (query.sessionID) {
+                opArgs.where.id = query.sessionID
+            }
+
             if (query.roomID) {
                 opArgs.where.room = {roomID: query.roomID}
             }
@@ -64,7 +68,7 @@ const Query = {
             if (query.studentID) {
                 opArgs.where.students_some = {studentID: query.studentID}
             }
-            if (query.shift) {
+            if (query.shiftID) {
                 opArgs.where.shift = {shiftID: query.shiftID}
             }
         }
