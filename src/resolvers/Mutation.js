@@ -23,7 +23,7 @@ const Mutation = {
         return {user, token}
     },
 
-    signout(parent, args, {res, prisma}, info) {
+    signOut(parent, args, {res, prisma}, info) {
         res.clearCookie('token')
         return {message: 'Logged out'}
     },

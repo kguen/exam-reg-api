@@ -7,193 +7,193 @@ type SuccessMessage {
 }
 
 type Query {
-    me: UserPayload
-    students(query: String): [Student!]! @authenticated
-    courses(query: String): [Course!]! @authenticated
-    sessions(query: SessionQueryInput): [Session!]! @authenticated
-    shifts: [Shift!]! @authenticated
-    rooms: [Room!]! @authenticated
+  me: UserPayload
+  students(query: String): [Student!]! @authenticated
+  courses(query: String): [Course!]! @authenticated
+  sessions(query: SessionQueryInput): [Session!]! @authenticated
+  shifts: [Shift!]! @authenticated
+  rooms: [Room!]! @authenticated
 }
 
 type Mutation {
-    signIn(data: UserSignInInput!): AuthPayload!
-    signout: SuccessMessage
-    createStudent(data: StudentCreateInput!): Student! @authorized(role: ADMIN)
-    createCourse(data: CourseCreateInput!): Course! @authorized(role: ADMIN)
-    createSession(data: SessionCreateInput!): Session! @authorized(role: ADMIN)
-    createRoom(data: RoomCreateInput!): Room! @authorized(role: ADMIN)
-    createShift(data: ShiftCreateInput!): Shift! @authorized(role: ADMIN)
-    deleteStudent(studentID: String!): Student! @authorized(role: ADMIN)
-    deleteCourse(courseID: String!): Course! @authorized(role: ADMIN)
-    deleteSession(id: ID!): Session! @authorized(role: ADMIN)
-    deleteShift(shiftID: String!): Shift! @authorized(role: ADMIN)
-    deleteRoom(roomID: String!): Room! @authorized(role: ADMIN)
-    updateStudent(studentID: String!, data: StudentUpdateInput!): Student!
-        @authenticated
-    updateCourse(courseID: String!, data: CourseUpdateInput!): Course!
-        @authorized(role: ADMIN)
-    updateSession(id: ID!, data: SessionUpdateInput!): Session!
-        @authorized(role: ADMIN)
-    registerToSession(id: ID!, studentID: String!): Session! @authenticated
-    unregisterFromSession(id: ID!, studentID: String!): Session! @authenticated
-    updateShift(shiftID: String!, data: ShiftUpdateInput!): Shift!
-        @authorized(role: ADMIN)
-    updateRoom(roomID: String!, data: RoomUpdateInput!): Room!
-        @authorized(role: ADMIN)
+  signIn(data: UserSignInInput!): AuthPayload!
+  signOut: SuccessMessage
+  createStudent(data: StudentCreateInput!): Student! @authorized(role: ADMIN)
+  createCourse(data: CourseCreateInput!): Course! @authorized(role: ADMIN)
+  createSession(data: SessionCreateInput!): Session! @authorized(role: ADMIN)
+  createRoom(data: RoomCreateInput!): Room! @authorized(role: ADMIN)
+  createShift(data: ShiftCreateInput!): Shift! @authorized(role: ADMIN)
+  deleteStudent(studentID: String!): Student! @authorized(role: ADMIN)
+  deleteCourse(courseID: String!): Course! @authorized(role: ADMIN)
+  deleteSession(id: ID!): Session! @authorized(role: ADMIN)
+  deleteShift(shiftID: String!): Shift! @authorized(role: ADMIN)
+  deleteRoom(roomID: String!): Room! @authorized(role: ADMIN)
+  updateStudent(studentID: String!, data: StudentUpdateInput!): Student!
+    @authenticated
+  updateCourse(courseID: String!, data: CourseUpdateInput!): Course!
+    @authorized(role: ADMIN)
+  updateSession(id: ID!, data: SessionUpdateInput!): Session!
+    @authorized(role: ADMIN)
+  registerToSession(id: ID!, studentID: String!): Session! @authenticated
+  unregisterFromSession(id: ID!, studentID: String!): Session! @authenticated
+  updateShift(shiftID: String!, data: ShiftUpdateInput!): Shift!
+    @authorized(role: ADMIN)
+  updateRoom(roomID: String!, data: RoomUpdateInput!): Room!
+    @authorized(role: ADMIN)
 }
 
 type AuthPayload {
-    user: User!
-    token: String!
+  user: User!
+  token: String!
 }
 
 type UserPayload {
-    id: ID
-    studentID: String
-    userInfo: User
-    courses: [Course!]
+  id: ID
+  studentID: String
+  userInfo: User
+  courses: [Course!]
 }
 
 input UserSignInInput {
-    email: String!
-    password: String!
+  email: String!
+  password: String!
 }
 
 input UserInfoCreateInput {
-    name: String!
-    email: String!
-    password: String!
+  name: String!
+  email: String!
+  password: String!
 }
 
 input UserInfoUpdateInput {
-    name: String
-    email: String
-    password: String
+  name: String
+  email: String
+  password: String
 }
 
 input StudentCreateInput {
-    studentID: String!
-    userInfo: UserInfoCreateInput!
-    courseIDs: [String!]
-    nonEligibleCourseIDs: [String!]
+  studentID: String!
+  userInfo: UserInfoCreateInput!
+  courseIDs: [String!]
+  nonEligibleCourseIDs: [String!]
 }
 
 input StudentUpdateInput {
-    studentID: String
-    userInfo: UserInfoUpdateInput
-    courseIDs: ArrayUpdateInput
-    nonEligibleCourseIDs: ArrayUpdateInput
+  studentID: String
+  userInfo: UserInfoUpdateInput
+  courseIDs: ArrayUpdateInput
+  nonEligibleCourseIDs: ArrayUpdateInput
 }
 
 input CourseCreateInput {
-    courseID: String!
-    name: String!
-    studentIDs: [String!]
-    nonEligibleStudentIDs: [String!]
+  courseID: String!
+  name: String!
+  studentIDs: [String!]
+  nonEligibleStudentIDs: [String!]
 }
 
 input CourseUpdateInput {
-    courseID: String
-    name: String
-    studentIDs: ArrayUpdateInput
-    nonEligibleStudentIDs: ArrayUpdateInput
+  courseID: String
+  name: String
+  studentIDs: ArrayUpdateInput
+  nonEligibleStudentIDs: ArrayUpdateInput
 }
 
 input SessionCreateInput {
-    courseID: String!
-    shiftID: String!
-    roomID: String!
-    studentIDs: [String!]!
+  courseID: String!
+  shiftID: String!
+  roomID: String!
+  studentIDs: [String!]!
 }
 
 input SessionUpdateInput {
-    name: String
-    courseID: String
-    shiftID: String
-    roomID: String
-    studentIDs: ArrayUpdateInput
+  name: String
+  courseID: String
+  shiftID: String
+  roomID: String
+  studentIDs: ArrayUpdateInput
 }
 
 input SessionQueryInput {
-    shiftID: String
-    courseID: String
-    roomID: String
-    studentID: String
+  shiftID: String
+  courseID: String
+  roomID: String
+  studentID: String
 }
 
 input ShiftCreateInput {
-    shiftID: String!
-    date: String!
-    startTime: String!
-    endTime: String!
+  shiftID: String!
+  date: String!
+  startTime: String!
+  endTime: String!
 }
 
 input ShiftUpdateInput {
-    shiftID: String
-    date: String
-    startTime: String
-    endTime: String
+  shiftID: String
+  date: String
+  startTime: String
+  endTime: String
 }
 
 input RoomCreateInput {
-    roomID: String!
-    totalPC: Int!
+  roomID: String!
+  totalPC: Int!
 }
 
 input RoomUpdateInput {
-    roomID: String
-    totalPC: Int
+  roomID: String
+  totalPC: Int
 }
 
 input ArrayUpdateInput {
-    connect: [String!]
-    disconnect: [String!]
+  connect: [String!]
+  disconnect: [String!]
 }
 
 type Student {
-    id: ID!
-    studentID: String!
-    userInfo: User!
-    courses: [Course!]
-    nonEligibleCourses: [Course!]
+  id: ID!
+  studentID: String!
+  userInfo: User!
+  courses: [Course!]
+  nonEligibleCourses: [Course!]
 }
 
 type Course {
-    id: ID!
-    courseID: String!
-    name: String!
-    sessions: [Session!]!
-    students: [Student!]!
-    nonEligibleStudents: [Student!]!
+  id: ID!
+  courseID: String!
+  name: String!
+  sessions: [Session!]!
+  students: [Student!]!
+  nonEligibleStudents: [Student!]!
 }
 
 type Shift {
-    id: ID!
-    shiftID: String!
-    date: String!
-    startTime: String!
-    endTime: String!
-    sessions: [Session!]!
+  id: ID!
+  shiftID: String!
+  date: String!
+  startTime: String!
+  endTime: String!
+  sessions: [Session!]!
 }
 
 type Room {
-    id: ID!
-    roomID: String!
-    totalPC: Int!
-    sessions: [Session!]!
+  id: ID!
+  roomID: String!
+  totalPC: Int!
+  sessions: [Session!]!
 }
 
 type Session {
-    id: ID!
-    students: [Student!]!
-    course: Course!
-    shift: Shift!
-    room: Room!
+  id: ID!
+  students: [Student!]!
+  course: Course!
+  shift: Shift!
+  room: Room!
 }
 
 type User {
-    id: ID!
-    name: String!
-    email: String
-    userType: Permission!
+  id: ID!
+  name: String!
+  email: String
+  userType: Permission!
 }
