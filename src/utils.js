@@ -39,9 +39,6 @@ const validateDate = (...dateArr) => {
 }
 
 const formatDate = (date, format = defaultDateFormat) => {
-    if (!moment(date).isValid()) {
-        throw new Error('Invalid date!')
-    }
     return moment(date).format(format)
 }
 

@@ -662,6 +662,7 @@ const Mutation = {
             throw new Error(`There's no shift that exists with id ${args.shiftID}!`)
         }
         if (args.data.date) {
+            validateDate(args.data.date)
             newShift.date = formatDate(args.data.date)
         }
         if (args.data.startTime) {

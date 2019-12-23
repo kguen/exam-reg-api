@@ -1,6 +1,7 @@
 import cookieParser from 'cookie-parser'
 import jwt from 'jsonwebtoken'
 import {GraphQLServer} from 'graphql-yoga'
+import cors from 'cors'
 import prisma from './prisma'
 import {uploadRouter} from './routes'
 
@@ -24,6 +25,15 @@ const server = new GraphQLServer({
     },
     fragmentReplacements,
 })
+
+const opts = {
+    port: 4000,
+    cors: {
+        credentials: true,
+        origin: ['http://localhost:3000', 'https://postwoman.io'], // frontend url.
+    },
+}
+server.express.use(cors(opts.cors))
 
 server.express.use(cookieParser())
 
@@ -55,14 +65,6 @@ server.express.use(async (req, res, next) => {
 })
 
 server.express.use('/upload', uploadRouter)
-
-const opts = {
-    port: 4000,
-    cors: {
-        credentials: true,
-        origin: ['http://localhost:3000', 'https://postwoman.io'], // frontend url.
-    },
-}
 
 server.start(opts, () => {
     console.log(`Server is running on http://localhost:${opts.port}`)
