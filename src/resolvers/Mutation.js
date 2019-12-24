@@ -663,7 +663,7 @@ const Mutation = {
         }
         if (args.data.date) {
             validateDate(args.data.date)
-            newShift.date = formatDate(args.data.date)
+            newShift.date = args.data.date
         }
         if (args.data.startTime) {
             validateTime(args.data.startTime)

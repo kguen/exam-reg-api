@@ -292,6 +292,12 @@ let sessions = [
         roomID: '06',
         students: '17020783',
     },
+    {
+        courseID: 'AGT 2002 1',
+        shiftID: '07',
+        roomID: '07',
+        students: '17020009',
+    },
 ]
 
 const studentHeader = ['name', 'studentID', 'email', 'courses', 'nonEligibleCourses']
